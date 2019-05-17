@@ -90,12 +90,28 @@ struct task_struct
 	long blocked; /* bitmap of masked signals */
 				  /* various fields */
 	int exit_code;
-	unsigned long start_code, end_code, end_data, brk, start_stack;
-	long pid, father, pgrp, session, leader;
-	unsigned short uid, euid, suid;
-	unsigned short gid, egid, sgid;
+    unsigned long start_code;
+    unsigned long end_code;
+    unsigned long end_data;
+    unsigned long brk;
+    unsigned long start_stack;
+    long pid;
+    long father;
+    long pgrp;
+    long session;
+    long leader;
+    unsigned short uid;
+    unsigned short euid;
+    unsigned short suid;
+    unsigned short gid;
+    unsigned short egid;
+    unsigned short sgid;
 	long alarm;
-	long utime, stime, cutime, cstime, start_time;
+    long utime;
+    long stime;
+    long cutime;
+    long cstime;
+    long start_time;
 	unsigned short used_math;
 	/* file system info */
 	int tty; /* -1 if no tty, so it must be signed */
