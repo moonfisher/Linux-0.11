@@ -50,28 +50,30 @@ int sys_prof()
 
 int sys_setregid(int rgid, int egid)
 {
-	if (rgid>0) {
-		if ((current->gid == rgid) || 
-		    suser())
+	if (rgid > 0)
+	{
+		if ((current->gid == rgid) ||
+			suser())
 			current->gid = rgid;
 		else
-			return(-EPERM);
+			return (-EPERM);
 	}
-	if (egid>0) {
+	if (egid > 0)
+	{
 		if ((current->gid == egid) ||
-		    (current->egid == egid) ||
-		    (current->sgid == egid) ||
-		    suser())
+			(current->egid == egid) ||
+			(current->sgid == egid) ||
+			suser())
 			current->egid = egid;
 		else
-			return(-EPERM);
+			return (-EPERM);
 	}
 	return 0;
 }
 
 int sys_setgid(int gid)
 {
-	return(sys_setregid(gid, gid));
+	return (sys_setregid(gid, gid));
 }
 
 int sys_acct()
@@ -99,14 +101,15 @@ int sys_ulimit()
 	return -ENOSYS;
 }
 
-int sys_time(long * tloc)
+int sys_time(long *tloc)
 {
 	int i;
 
 	i = CURRENT_TIME;
-	if (tloc) {
-		verify_area(tloc,4);
-		put_fs_long(i,(unsigned long *)tloc);
+	if (tloc)
+	{
+		verify_area(tloc, 4);
+		put_fs_long(i, (unsigned long *)tloc);
 	}
 	return i;
 }
@@ -118,23 +121,26 @@ int sys_time(long * tloc)
 int sys_setreuid(int ruid, int euid)
 {
 	int old_ruid = current->uid;
-	
-	if (ruid>0) {
-		if ((current->euid==ruid) ||
-                    (old_ruid == ruid) ||
-		    suser())
+
+	if (ruid > 0)
+	{
+		if ((current->euid == ruid) ||
+			(old_ruid == ruid) ||
+			suser())
 			current->uid = ruid;
 		else
-			return(-EPERM);
+			return (-EPERM);
 	}
-	if (euid>0) {
+	if (euid > 0)
+	{
 		if ((old_ruid == euid) ||
-                    (current->euid == euid) ||
-		    suser())
+			(current->euid == euid) ||
+			suser())
 			current->euid = euid;
-		else {
+		else
+		{
 			current->uid = old_ruid;
-			return(-EPERM);
+			return (-EPERM);
 		}
 	}
 	return 0;
@@ -142,25 +148,26 @@ int sys_setreuid(int ruid, int euid)
 
 int sys_setuid(int uid)
 {
-	return(sys_setreuid(uid, uid));
+	return (sys_setreuid(uid, uid));
 }
 
-int sys_stime(long * tptr)
+int sys_stime(long *tptr)
 {
 	if (!suser())
 		return -EPERM;
-	startup_time = get_fs_long((unsigned long *)tptr) - jiffies/HZ;
+	startup_time = get_fs_long((unsigned long *)tptr) - jiffies / HZ;
 	return 0;
 }
 
-int sys_times(struct tms * tbuf)
+int sys_times(struct tms *tbuf)
 {
-	if (tbuf) {
-		verify_area(tbuf,sizeof *tbuf);
-		put_fs_long(current->utime,(unsigned long *)&tbuf->tms_utime);
-		put_fs_long(current->stime,(unsigned long *)&tbuf->tms_stime);
-		put_fs_long(current->cutime,(unsigned long *)&tbuf->tms_cutime);
-		put_fs_long(current->cstime,(unsigned long *)&tbuf->tms_cstime);
+	if (tbuf)
+	{
+		verify_area(tbuf, sizeof *tbuf);
+		put_fs_long(current->utime, (unsigned long *)&tbuf->tms_utime);
+		put_fs_long(current->stime, (unsigned long *)&tbuf->tms_stime);
+		put_fs_long(current->cutime, (unsigned long *)&tbuf->tms_cutime);
+		put_fs_long(current->cstime, (unsigned long *)&tbuf->tms_cstime);
 	}
 	return jiffies;
 }
@@ -168,7 +175,7 @@ int sys_times(struct tms * tbuf)
 int sys_brk(unsigned long end_data_seg)
 {
 	if (end_data_seg >= current->end_code &&
-	    end_data_seg < current->start_stack - 16384)
+		end_data_seg < current->start_stack - 16384)
 		current->brk = end_data_seg;
 	return current->brk;
 }
@@ -186,8 +193,9 @@ int sys_setpgid(int pid, int pgid)
 		pid = current->pid;
 	if (!pgid)
 		pgid = current->pid;
-	for (i=0 ; i<NR_TASKS ; i++)
-		if (task[i] && task[i]->pid==pid) {
+	for (i = 0; i < NR_TASKS; i++)
+		if (task[i] && task[i]->pid == pid)
+		{
 			if (task[i]->leader)
 				return -EPERM;
 			if (task[i]->session != current->session)
@@ -213,17 +221,17 @@ int sys_setsid(void)
 	return current->pgrp;
 }
 
-int sys_uname(struct utsname * name)
+int sys_uname(struct utsname *name)
 {
 	static struct utsname thisname = {
-		"linux .0","nodename","release ","version ","machine "
-	};
+		"linux .0", "nodename", "release ", "version ", "machine "};
 	int i;
 
-	if (!name) return -ERROR;
-	verify_area(name,sizeof *name);
-	for(i=0;i<sizeof *name;i++)
-		put_fs_byte(((char *) &thisname)[i],i+(char *) name);
+	if (!name)
+		return -ERROR;
+	verify_area(name, sizeof *name);
+	for (i = 0; i < sizeof *name; i++)
+		put_fs_byte(((char *)&thisname)[i], i + (char *)name);
 	return 0;
 }
 

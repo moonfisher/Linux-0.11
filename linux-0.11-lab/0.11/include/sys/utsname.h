@@ -3,7 +3,8 @@
 
 #include <sys/types.h>
 
-struct utsname {
+struct utsname
+{
 	char sysname[9];
 	char nodename[9];
 	char release[9];
@@ -11,6 +12,6 @@ struct utsname {
 	char machine[9];
 };
 
-extern int uname(struct utsname * utsbuf);
+extern int uname(struct utsname *utsbuf);
 
 #endif

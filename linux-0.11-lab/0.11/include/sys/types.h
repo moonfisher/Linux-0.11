@@ -17,7 +17,7 @@ typedef long ptrdiff_t;
 #endif
 
 #ifndef NULL
-#define NULL ((void *) 0)
+#define NULL ((void *)0)
 #endif
 
 typedef int pid_t;
@@ -33,10 +33,17 @@ typedef long off_t;
 typedef unsigned char u_char;
 typedef unsigned short ushort;
 
-typedef struct { int quot,rem; } div_t;
-typedef struct { long quot,rem; } ldiv_t;
+typedef struct
+{
+	int quot, rem;
+} div_t;
+typedef struct
+{
+	long quot, rem;
+} ldiv_t;
 
-struct ustat {
+struct ustat
+{
 	daddr_t f_tfree;
 	ino_t f_tinode;
 	char f_fname[6];

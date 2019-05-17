@@ -37,24 +37,26 @@ static inline void oom(void)
 }
 
 #define invalidate() \
-__asm__("movl %%eax,%%cr3"::"a" (0))
+	__asm__("movl %%eax,%%cr3" ::"a"(0))
 
 /* these are not to be changed without changing head.s etc */
 #define LOW_MEM 0x100000
-#define PAGING_MEMORY (15*1024*1024)
-#define PAGING_PAGES (PAGING_MEMORY>>12)
-#define MAP_NR(addr) (((addr)-LOW_MEM)>>12)
+#define PAGING_MEMORY (15 * 1024 * 1024)
+#define PAGING_PAGES (PAGING_MEMORY >> 12)
+#define MAP_NR(addr) (((addr)-LOW_MEM) >> 12)
 #define USED 100
 
-#define CODE_SPACE(addr) ((((addr)+4095)&~4095) < \
-current->start_code + current->end_code)
+#define CODE_SPACE(addr) ((((addr) + 4095) & ~4095) < \
+						  current->start_code + current->end_code)
 
 static long HIGH_MEMORY = 0;
 
-#define copy_page(from,to) \
-__asm__("cld ; rep ; movsl"::"S" (from),"D" (to),"c" (1024))
+#define copy_page(from, to) \
+	__asm__("cld ; rep ; movsl" ::"S"(from), "D"(to), "c"(1024))
 
-static unsigned char mem_map [ PAGING_PAGES ] = {0,};
+static unsigned char mem_map[PAGING_PAGES] = {
+	0,
+};
 
 /*
  * Get physical address of first (actually last :-) free page, and mark it
@@ -62,24 +64,23 @@ static unsigned char mem_map [ PAGING_PAGES ] = {0,};
  */
 unsigned long get_free_page(void)
 {
-register unsigned long __res asm("ax");
+	register unsigned long __res asm("ax");
 
-__asm__("std ; repne ; scasb\n\t"
-	"jne 1f\n\t"
-	"movb $1,1(%%edi)\n\t"
-	"sall $12,%%ecx\n\t"
-	"addl %2,%%ecx\n\t"
-	"movl %%ecx,%%edx\n\t"
-	"movl $1024,%%ecx\n\t"
-	"leal 4092(%%edx),%%edi\n\t"
-	"rep ; stosl\n\t"
-	" movl %%edx,%%eax\n"
-	"1: cld"
-	:"=a" (__res)
-	:"0" (0),"i" (LOW_MEM),"c" (PAGING_PAGES),
-	"D" (mem_map+PAGING_PAGES-1)
-	);
-return __res;
+	__asm__("std ; repne ; scasb\n\t"
+			"jne 1f\n\t"
+			"movb $1,1(%%edi)\n\t"
+			"sall $12,%%ecx\n\t"
+			"addl %2,%%ecx\n\t"
+			"movl %%ecx,%%edx\n\t"
+			"movl $1024,%%ecx\n\t"
+			"leal 4092(%%edx),%%edi\n\t"
+			"rep ; stosl\n\t"
+			" movl %%edx,%%eax\n"
+			"1: cld"
+			: "=a"(__res)
+			: "0"(0), "i"(LOW_MEM), "c"(PAGING_PAGES),
+			  "D"(mem_map + PAGING_PAGES - 1));
+	return __res;
 }
 
 /*
@@ -88,13 +89,15 @@ return __res;
  */
 void free_page(unsigned long addr)
 {
-	if (addr < LOW_MEM) return;
+	if (addr < LOW_MEM)
+		return;
 	if (addr >= HIGH_MEMORY)
 		panic("trying to free nonexistent page");
 	addr -= LOW_MEM;
 	addr >>= 12;
-	if (mem_map[addr]--) return;
-	mem_map[addr]=0;
+	if (mem_map[addr]--)
+		return;
+	mem_map[addr] = 0;
 	panic("trying to free free page");
 }
 
@@ -102,22 +105,24 @@ void free_page(unsigned long addr)
  * This function frees a continuos block of page tables, as needed
  * by 'exit()'. As does copy_page_tables(), this handles only 4Mb blocks.
  */
-int free_page_tables(unsigned long from,unsigned long size)
+int free_page_tables(unsigned long from, unsigned long size)
 {
 	unsigned long *pg_table;
-	unsigned long * dir, nr;
+	unsigned long *dir, nr;
 
 	if (from & 0x3fffff)
 		panic("free_page_tables called with wrong alignment");
 	if (!from)
 		panic("Trying to free up swapper memory space");
 	size = (size + 0x3fffff) >> 22;
-	dir = (unsigned long *) ((from>>20) & 0xffc); /* _pg_dir = 0 */
-	for ( ; size-->0 ; dir++) {
+	dir = (unsigned long *)((from >> 20) & 0xffc); /* _pg_dir = 0 */
+	for (; size-- > 0; dir++)
+	{
 		if (!(1 & *dir))
 			continue;
-		pg_table = (unsigned long *) (0xfffff000 & *dir);
-		for (nr=0 ; nr<1024 ; nr++) {
+		pg_table = (unsigned long *)(0xfffff000 & *dir);
+		for (nr = 0; nr < 1024; nr++)
+		{
 			if (1 & *pg_table)
 				free_page(0xfffff000 & *pg_table);
 			*pg_table = 0;
@@ -147,36 +152,39 @@ int free_page_tables(unsigned long from,unsigned long size)
  * 1 Mb-range, so the pages can be shared with the kernel. Thus the
  * special case for nr=xxxx.
  */
-int copy_page_tables(unsigned long from,unsigned long to,long size)
+int copy_page_tables(unsigned long from, unsigned long to, long size)
 {
-	unsigned long * from_page_table;
-	unsigned long * to_page_table;
+	unsigned long *from_page_table;
+	unsigned long *to_page_table;
 	unsigned long this_page;
-	unsigned long * from_dir, * to_dir;
+	unsigned long *from_dir, *to_dir;
 	unsigned long nr;
 
-	if ((from&0x3fffff) || (to&0x3fffff))
+	if ((from & 0x3fffff) || (to & 0x3fffff))
 		panic("copy_page_tables called with wrong alignment");
-	from_dir = (unsigned long *) ((from>>20) & 0xffc); /* _pg_dir = 0 */
-	to_dir = (unsigned long *) ((to>>20) & 0xffc);
-	size = ((unsigned) (size+0x3fffff)) >> 22;
-	for( ; size-->0 ; from_dir++,to_dir++) {
+	from_dir = (unsigned long *)((from >> 20) & 0xffc); /* _pg_dir = 0 */
+	to_dir = (unsigned long *)((to >> 20) & 0xffc);
+	size = ((unsigned)(size + 0x3fffff)) >> 22;
+	for (; size-- > 0; from_dir++, to_dir++)
+	{
 		if (1 & *to_dir)
 			panic("copy_page_tables: already exist");
 		if (!(1 & *from_dir))
 			continue;
-		from_page_table = (unsigned long *) (0xfffff000 & *from_dir);
-		if (!(to_page_table = (unsigned long *) get_free_page()))
-			return -1;	/* Out of memory, see freeing */
-		*to_dir = ((unsigned long) to_page_table) | 7;
-		nr = (from==0)?0xA0:1024;
-		for ( ; nr-- > 0 ; from_page_table++,to_page_table++) {
+		from_page_table = (unsigned long *)(0xfffff000 & *from_dir);
+		if (!(to_page_table = (unsigned long *)get_free_page()))
+			return -1; /* Out of memory, see freeing */
+		*to_dir = ((unsigned long)to_page_table) | 7;
+		nr = (from == 0) ? 0xA0 : 1024;
+		for (; nr-- > 0; from_page_table++, to_page_table++)
+		{
 			this_page = *from_page_table;
 			if (!(1 & this_page))
 				continue;
 			this_page &= ~2;
 			*to_page_table = this_page;
-			if (this_page > LOW_MEM) {
+			if (this_page > LOW_MEM)
+			{
 				*from_page_table = this_page;
 				this_page -= LOW_MEM;
 				this_page >>= 12;
@@ -194,48 +202,50 @@ int copy_page_tables(unsigned long from,unsigned long to,long size)
  * out of memory (either when trying to access page-table or
  * page.)
  */
-unsigned long put_page(unsigned long page,unsigned long address)
+unsigned long put_page(unsigned long page, unsigned long address)
 {
 	unsigned long tmp, *page_table;
 
-/* NOTE !!! This uses the fact that _pg_dir=0 */
+	/* NOTE !!! This uses the fact that _pg_dir=0 */
 
 	if (page < LOW_MEM || page >= HIGH_MEMORY)
-		printk("Trying to put page %p at %p\n",page,address);
-	if (mem_map[(page-LOW_MEM)>>12] != 1)
-		printk("mem_map disagrees with %p at %p\n",page,address);
-	page_table = (unsigned long *) ((address>>20) & 0xffc);
-	if ((*page_table)&1)
-		page_table = (unsigned long *) (0xfffff000 & *page_table);
-	else {
-		if (!(tmp=get_free_page()))
+		printk("Trying to put page %p at %p\n", page, address);
+	if (mem_map[(page - LOW_MEM) >> 12] != 1)
+		printk("mem_map disagrees with %p at %p\n", page, address);
+	page_table = (unsigned long *)((address >> 20) & 0xffc);
+	if ((*page_table) & 1)
+		page_table = (unsigned long *)(0xfffff000 & *page_table);
+	else
+	{
+		if (!(tmp = get_free_page()))
 			return 0;
-		*page_table = tmp|7;
-		page_table = (unsigned long *) tmp;
+		*page_table = tmp | 7;
+		page_table = (unsigned long *)tmp;
 	}
-	page_table[(address>>12) & 0x3ff] = page | 7;
-/* no need for invalidate */
+	page_table[(address >> 12) & 0x3ff] = page | 7;
+	/* no need for invalidate */
 	return page;
 }
 
-void un_wp_page(unsigned long * table_entry)
+void un_wp_page(unsigned long *table_entry)
 {
-	unsigned long old_page,new_page;
+	unsigned long old_page, new_page;
 
 	old_page = 0xfffff000 & *table_entry;
-	if (old_page >= LOW_MEM && mem_map[MAP_NR(old_page)]==1) {
+	if (old_page >= LOW_MEM && mem_map[MAP_NR(old_page)] == 1)
+	{
 		*table_entry |= 2;
 		invalidate();
 		return;
 	}
-	if (!(new_page=get_free_page()))
+	if (!(new_page = get_free_page()))
 		oom();
 	if (old_page >= LOW_MEM)
 		mem_map[MAP_NR(old_page)]--;
 	*table_entry = new_page | 7;
 	invalidate();
-	copy_page(old_page,new_page);
-}	
+	copy_page(old_page, new_page);
+}
 
 /*
  * This routine handles present pages, when users try to write
@@ -244,7 +254,7 @@ void un_wp_page(unsigned long * table_entry)
  *
  * If it's in code space we exit with a segment error.
  */
-void do_wp_page(unsigned long error_code,unsigned long address)
+void do_wp_page(unsigned long error_code, unsigned long address)
 {
 #if 0
 /* we cannot do this yet: the estdio library writes to code space */
@@ -252,22 +262,20 @@ void do_wp_page(unsigned long error_code,unsigned long address)
 	if (CODE_SPACE(address))
 		do_exit(SIGSEGV);
 #endif
-	un_wp_page((unsigned long *)
-		(((address>>10) & 0xffc) + (0xfffff000 &
-		*((unsigned long *) ((address>>20) &0xffc)))));
-
+	un_wp_page((unsigned long *)(((address >> 10) & 0xffc) + (0xfffff000 &
+															  *((unsigned long *)((address >> 20) & 0xffc)))));
 }
 
 void write_verify(unsigned long address)
 {
 	unsigned long page;
 
-	if (!( (page = *((unsigned long *) ((address>>20) & 0xffc)) )&1))
+	if (!((page = *((unsigned long *)((address >> 20) & 0xffc))) & 1))
 		return;
 	page &= 0xfffff000;
-	page += ((address>>10) & 0xffc);
-	if ((3 & *(unsigned long *) page) == 1)  /* non-writeable, present */
-		un_wp_page((unsigned long *) page);
+	page += ((address >> 10) & 0xffc);
+	if ((3 & *(unsigned long *)page) == 1) /* non-writeable, present */
+		un_wp_page((unsigned long *)page);
 	return;
 }
 
@@ -275,8 +283,9 @@ void get_empty_page(unsigned long address)
 {
 	unsigned long tmp;
 
-	if (!(tmp=get_free_page()) || !put_page(tmp,address)) {
-		free_page(tmp);		/* 0 is ok - ignored */
+	if (!(tmp = get_free_page()) || !put_page(tmp, address))
+	{
+		free_page(tmp); /* 0 is ok - ignored */
 		oom();
 	}
 }
@@ -289,7 +298,7 @@ void get_empty_page(unsigned long address)
  * NOTE! This assumes we have checked that p != current, and that they
  * share the same executable.
  */
-static int try_to_share(unsigned long address, struct task_struct * p)
+static int try_to_share(unsigned long address, struct task_struct *p)
 {
 	unsigned long from;
 	unsigned long to;
@@ -297,36 +306,37 @@ static int try_to_share(unsigned long address, struct task_struct * p)
 	unsigned long to_page;
 	unsigned long phys_addr;
 
-	from_page = to_page = ((address>>20) & 0xffc);
-	from_page += ((p->start_code>>20) & 0xffc);
-	to_page += ((current->start_code>>20) & 0xffc);
-/* is there a page-directory at from? */
-	from = *(unsigned long *) from_page;
+	from_page = to_page = ((address >> 20) & 0xffc);
+	from_page += ((p->start_code >> 20) & 0xffc);
+	to_page += ((current->start_code >> 20) & 0xffc);
+	/* is there a page-directory at from? */
+	from = *(unsigned long *)from_page;
 	if (!(from & 1))
 		return 0;
 	from &= 0xfffff000;
-	from_page = from + ((address>>10) & 0xffc);
-	phys_addr = *(unsigned long *) from_page;
-/* is the page clean and present? */
+	from_page = from + ((address >> 10) & 0xffc);
+	phys_addr = *(unsigned long *)from_page;
+	/* is the page clean and present? */
 	if ((phys_addr & 0x41) != 0x01)
 		return 0;
 	phys_addr &= 0xfffff000;
 	if (phys_addr >= HIGH_MEMORY || phys_addr < LOW_MEM)
 		return 0;
-	to = *(unsigned long *) to_page;
-	if (!(to & 1)) {
+	to = *(unsigned long *)to_page;
+	if (!(to & 1))
+	{
 		if ((to = get_free_page()))
-			*(unsigned long *) to_page = to | 7;
+			*(unsigned long *)to_page = to | 7;
 		else
 			oom();
 	}
 	to &= 0xfffff000;
-	to_page = to + ((address>>10) & 0xffc);
-	if (1 & *(unsigned long *) to_page)
+	to_page = to + ((address >> 10) & 0xffc);
+	if (1 & *(unsigned long *)to_page)
 		panic("try_to_share: to_page already exists");
-/* share them: write-protect */
-	*(unsigned long *) from_page &= ~2;
-	*(unsigned long *) to_page = *(unsigned long *) from_page;
+	/* share them: write-protect */
+	*(unsigned long *)from_page &= ~2;
+	*(unsigned long *)to_page = *(unsigned long *)from_page;
 	invalidate();
 	phys_addr -= LOW_MEM;
 	phys_addr >>= 12;
@@ -344,35 +354,37 @@ static int try_to_share(unsigned long address, struct task_struct * p)
  */
 static int share_page(unsigned long address)
 {
-	struct task_struct ** p;
+	struct task_struct **p;
 
 	if (!current->executable)
 		return 0;
 	if (current->executable->i_count < 2)
 		return 0;
-	for (p = &LAST_TASK ; p > &FIRST_TASK ; --p) {
+	for (p = &LAST_TASK; p > &FIRST_TASK; --p)
+	{
 		if (!*p)
 			continue;
 		if (current == *p)
 			continue;
 		if ((*p)->executable != current->executable)
 			continue;
-		if (try_to_share(address,*p))
+		if (try_to_share(address, *p))
 			return 1;
 	}
 	return 0;
 }
 
-void do_no_page(unsigned long error_code,unsigned long address)
+void do_no_page(unsigned long error_code, unsigned long address)
 {
 	int nr[4];
 	unsigned long tmp;
 	unsigned long page;
-	int block,i;
+	int block, i;
 
 	address &= 0xfffff000;
 	tmp = address - current->start_code;
-	if (!current->executable || tmp >= current->end_data) {
+	if (!current->executable || tmp >= current->end_data)
+	{
 		get_empty_page(address);
 		return;
 	}
@@ -380,18 +392,19 @@ void do_no_page(unsigned long error_code,unsigned long address)
 		return;
 	if (!(page = get_free_page()))
 		oom();
-/* remember that 1 block is used for header */
-	block = 1 + tmp/BLOCK_SIZE;
-	for (i=0 ; i<4 ; block++,i++)
-		nr[i] = bmap(current->executable,block);
-	bread_page(page,current->executable->i_dev,nr);
+	/* remember that 1 block is used for header */
+	block = 1 + tmp / BLOCK_SIZE;
+	for (i = 0; i < 4; block++, i++)
+		nr[i] = bmap(current->executable, block);
+	bread_page(page, current->executable->i_dev, nr);
 	i = tmp + 4096 - current->end_data;
 	tmp = page + 4096;
-	while (i-- > 0) {
+	while (i-- > 0)
+	{
 		tmp--;
 		*(char *)tmp = 0;
 	}
-	if (put_page(page,address))
+	if (put_page(page, address))
 		return;
 	free_page(page);
 	oom();
@@ -402,30 +415,33 @@ void mem_init(long start_mem, long end_mem)
 	int i;
 
 	HIGH_MEMORY = end_mem;
-	for (i=0 ; i<PAGING_PAGES ; i++)
+	for (i = 0; i < PAGING_PAGES; i++)
 		mem_map[i] = USED;
 	i = MAP_NR(start_mem);
 	end_mem -= start_mem;
 	end_mem >>= 12;
-	while (end_mem-->0)
-		mem_map[i++]=0;
+	while (end_mem-- > 0)
+		mem_map[i++] = 0;
 }
 
 void calc_mem(void)
 {
-	int i,j,k,free=0;
-	long * pg_tbl;
+	int i, j, k, free = 0;
+	long *pg_tbl;
 
-	for(i=0 ; i<PAGING_PAGES ; i++)
-		if (!mem_map[i]) free++;
-	printk("%d pages free (of %d)\n\r",free,PAGING_PAGES);
-	for(i=2 ; i<1024 ; i++) {
-		if (1&pg_dir[i]) {
-			pg_tbl=(long *) (0xfffff000 & pg_dir[i]);
-			for(j=k=0 ; j<1024 ; j++)
-				if (pg_tbl[j]&1)
+	for (i = 0; i < PAGING_PAGES; i++)
+		if (!mem_map[i])
+			free++;
+	printk("%d pages free (of %d)\n\r", free, PAGING_PAGES);
+	for (i = 2; i < 1024; i++)
+	{
+		if (1 & pg_dir[i])
+		{
+			pg_tbl = (long *)(0xfffff000 & pg_dir[i]);
+			for (j = k = 0; j < 1024; j++)
+				if (pg_tbl[j] & 1)
 					k++;
-			printk("Pg-dir[%d] uses %d pages\n",i,k);
+			printk("Pg-dir[%d] uses %d pages\n", i, k);
 		}
 	}
 }
