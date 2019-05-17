@@ -176,7 +176,9 @@ static unsigned long change_ldt(unsigned long text_size, unsigned long *page)
 	set_base(current->ldt[2], data_base);
 	set_limit(current->ldt[2], data_limit);
 	/* make sure fs points to the NEW data segment */
+#if ASM_NO_64
 	__asm__("pushl $0x17\n\tpop %%fs" ::);
+#endif
 	data_base += data_limit;
 	for (i = MAX_ARG_PAGES - 1; i >= 0; i--)
 	{

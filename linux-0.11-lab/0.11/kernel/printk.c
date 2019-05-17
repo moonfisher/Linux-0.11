@@ -20,6 +20,7 @@ extern int vsprintf(char *buf, const char *fmt, va_list args);
 
 int printk(const char *fmt, ...)
 {
+#if ASM_NO_64
 	va_list args;
 	int i;
 
@@ -38,4 +39,7 @@ int printk(const char *fmt, ...)
 			"pop %%fs" ::"r"(i)
 			: "ax", "cx", "dx");
 	return i;
+#else
+    return 0;
+#endif
 }

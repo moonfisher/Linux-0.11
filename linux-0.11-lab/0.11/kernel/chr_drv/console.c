@@ -115,6 +115,7 @@ static void scrup(void)
 			scr_end += video_size_row;
 			if (scr_end > video_mem_end)
 			{
+#if ASM_NO_64
 				__asm__("cld\n\t"
 						"rep\n\t"
 						"movsl\n\t"
@@ -124,6 +125,7 @@ static void scrup(void)
 						"c"((video_num_lines - 1) * video_num_columns >> 1),
 						"D"(video_mem_start),
 						"S"(origin));
+#endif
 				scr_end -= origin - video_mem_start;
 				pos -= origin - video_mem_start;
 				origin = video_mem_start;
@@ -140,6 +142,7 @@ static void scrup(void)
 		}
 		else
 		{
+#if ASM_NO_64
 			__asm__("cld\n\t"
 					"rep\n\t"
 					"movsl\n\t"
@@ -149,10 +152,12 @@ static void scrup(void)
 					"c"((bottom - top - 1) * video_num_columns >> 1),
 					"D"(origin + video_size_row * top),
 					"S"(origin + video_size_row * (top + 1)));
+#endif
 		}
 	}
 	else /* Not EGA/VGA */
 	{
+#if ASM_NO_64
 		__asm__("cld\n\t"
 				"rep\n\t"
 				"movsl\n\t"
@@ -162,6 +167,7 @@ static void scrup(void)
 				"c"((bottom - top - 1) * video_num_columns >> 1),
 				"D"(origin + video_size_row * top),
 				"S"(origin + video_size_row * (top + 1)));
+#endif
 	}
 }
 
@@ -169,6 +175,7 @@ static void scrdown(void)
 {
 	if (video_type == VIDEO_TYPE_EGAC || video_type == VIDEO_TYPE_EGAM)
 	{
+#if ASM_NO_64
 		__asm__("std\n\t"
 				"rep\n\t"
 				"movsl\n\t"
@@ -179,9 +186,11 @@ static void scrdown(void)
 				"c"((bottom - top - 1) * video_num_columns >> 1),
 				"D"(origin + video_size_row * bottom - 4),
 				"S"(origin + video_size_row * (bottom - 1) - 4));
+#endif
 	}
 	else /* Not EGA/VGA */
 	{
+#if ASM_NO_64
 		__asm__("std\n\t"
 				"rep\n\t"
 				"movsl\n\t"
@@ -192,6 +201,7 @@ static void scrdown(void)
 				"c"((bottom - top - 1) * video_num_columns >> 1),
 				"D"(origin + video_size_row * bottom - 4),
 				"S"(origin + video_size_row * (bottom - 1) - 4));
+#endif
 	}
 }
 
@@ -471,9 +481,12 @@ void con_write(struct tty_struct *tty)
 					pos -= video_size_row;
 					lf();
 				}
+                
+#if ASM_NO_64
 				__asm__("movb attr,%%ah\n\t"
 						"movw %%ax,%1\n\t" ::"a"(c),
 						"m"(*(short *)pos));
+#endif
 				pos += 2;
 				x++;
 			}

@@ -1,6 +1,12 @@
 #ifndef _UNISTD_H
 #define _UNISTD_H
 
+#if DEBUG
+    #define ASM_NO_64    0
+#else
+    #define ASM_NO_64    1
+#endif
+
 /* ok, this may be a joke, but I'm working on it */
 #define _POSIX_VERSION 198808L
 

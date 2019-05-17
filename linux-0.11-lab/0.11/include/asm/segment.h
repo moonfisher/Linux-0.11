@@ -20,12 +20,16 @@ static inline unsigned short get_fs_word(const unsigned short *addr)
 
 static inline unsigned long get_fs_long(const unsigned long *addr)
 {
+#if ASM_NO_64
 	unsigned long _v;
 
 	__asm__("movl %%fs:%1,%0"
 			: "=r"(_v)
 			: "m"(*addr));
 	return _v;
+#else
+    return 0;
+#endif
 }
 
 static inline void put_fs_byte(char val, char *addr)
@@ -40,7 +44,9 @@ static inline void put_fs_word(short val, short *addr)
 
 static inline void put_fs_long(unsigned long val, unsigned long *addr)
 {
-	__asm__("movl %0,%%fs:%1" ::"r"(val), "m"(*addr));
+#if ASM_NO_64
+    __asm__("movl %0,%%fs:%1" ::"r"(val), "m"(*addr));
+#endif
 }
 
 /*

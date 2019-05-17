@@ -36,8 +36,10 @@ static inline void oom(void)
 	do_exit(SIGSEGV);
 }
 
-#define invalidate() \
-	__asm__("movl %%eax,%%cr3" ::"a"(0))
+#if ASM_NO_64
+    #define invalidate() \
+        __asm__("movl %%eax,%%cr3" ::"a"(0))
+#endif
 
 /* these are not to be changed without changing head.s etc */
 #define LOW_MEM 0x100000

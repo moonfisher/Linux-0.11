@@ -53,6 +53,7 @@ static inline char *strncpy(char *dest, const char *src, int count)
 
 static inline char *strcat(char *dest, const char *src)
 {
+#if ASM_NO_64
 	__asm__("cld\n\t"
 			"repne\n\t"
 			"scasb\n\t"
@@ -63,10 +64,14 @@ static inline char *strcat(char *dest, const char *src)
 			"jne 1b" ::"S"(src),
 			"D"(dest), "a"(0), "c"(0xffffffff));
 	return dest;
+#else
+    return "";
+#endif
 }
 
 static inline char *strncat(char *dest, const char *src, int count)
 {
+#if ASM_NO_64
 	__asm__("cld\n\t"
 			"repne\n\t"
 			"scasb\n\t"
@@ -82,6 +87,9 @@ static inline char *strncat(char *dest, const char *src, int count)
 			"stosb" ::"S"(src),
 			"D"(dest), "a"(0), "c"(0xffffffff), "g"(count));
 	return dest;
+#else
+    return "";
+#endif
 }
 
 static inline int strcmp(const char *cs, const char *ct)
@@ -128,6 +136,7 @@ static inline int strncmp(const char *cs, const char *ct, int count)
 
 static inline char *strchr(const char *s, char c)
 {
+#if ASM_NO_64
 	register char *__res;
 	__asm__("cld\n\t"
 			"movb %%al,%%ah\n"
@@ -142,10 +151,14 @@ static inline char *strchr(const char *s, char c)
 			: "=a"(__res)
 			: "S"(s), "0"(c));
 	return __res;
+#else
+    return "";
+#endif
 }
 
 static inline char *strrchr(const char *s, char c)
 {
+#if ASM_NO_64
 	register char *__res;
 	__asm__("cld\n\t"
 			"movb %%al,%%ah\n"
@@ -159,10 +172,14 @@ static inline char *strrchr(const char *s, char c)
 			: "=d"(__res)
 			: "0"(0), "S"(s), "a"(c));
 	return __res;
+#else
+    return "";
+#endif
 }
 
 static inline int strspn(const char *cs, const char *ct)
 {
+#if ASM_NO_64
 	register char *__res;
 	__asm__("cld\n\t"
 			"movl %4,%%edi\n\t"
@@ -183,10 +200,14 @@ static inline int strspn(const char *cs, const char *ct)
 			: "=S"(__res)
 			: "a"(0), "c"(0xffffffff), "0"(cs), "g"(ct));
 	return __res - cs;
+#else
+    return 0;
+#endif
 }
 
 static inline int strcspn(const char *cs, const char *ct)
 {
+#if ASM_NO_64
 	register char *__res;
 	__asm__("cld\n\t"
 			"movl %4,%%edi\n\t"
@@ -207,10 +228,14 @@ static inline int strcspn(const char *cs, const char *ct)
 			: "=S"(__res)
 			: "a"(0), "c"(0xffffffff), "0"(cs), "g"(ct));
 	return __res - cs;
+#else
+    return 0;
+#endif
 }
 
 static inline char *strpbrk(const char *cs, const char *ct)
 {
+#if ASM_NO_64
 	register char *__res;
 	__asm__("cld\n\t"
 			"movl %4,%%edi\n\t"
@@ -234,6 +259,9 @@ static inline char *strpbrk(const char *cs, const char *ct)
 			: "=S"(__res)
 			: "a"(0), "c"(0xffffffff), "0"(cs), "g"(ct));
 	return __res;
+#else
+    return "";
+#endif
 }
 
 static inline char *strstr(const char *cs, const char *ct)
@@ -280,6 +308,7 @@ extern char *___strtok;
 
 static inline char *strtok(char *s, const char *ct)
 {
+#if ASM_NO_64
 	register char *__res;
 	__asm__("testl %1,%1\n\t"
 			"jne 1f\n\t"
@@ -334,6 +363,9 @@ static inline char *strtok(char *s, const char *ct)
 			: "=b"(__res), "=S"(___strtok)
 			: "0"(___strtok), "1"(s), "g"(ct));
 	return __res;
+#else
+    return "";
+#endif
 }
 
 static inline void *memcpy(void *dest, const void *src, int n)
@@ -378,6 +410,7 @@ static inline int memcmp(const void *cs, const void *ct, int count)
 
 static inline void *memchr(const void *cs, char c, int count)
 {
+#if ASM_NO_64
 	register void *__res;
 	if (!count)
 		return NULL;
@@ -390,6 +423,9 @@ static inline void *memchr(const void *cs, char c, int count)
 			: "=D"(__res)
 			: "a"(c), "D"(cs), "c"(count));
 	return __res;
+#else
+    return NULL;
+#endif
 }
 
 static inline void *memset(void *s, char c, int count)

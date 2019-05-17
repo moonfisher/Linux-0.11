@@ -1,6 +1,12 @@
 #ifndef _HEAD_H
 #define _HEAD_H
 
+#if DEBUG
+    #define ASM_NO_64    0
+#else
+    #define ASM_NO_64    1
+#endif
+
 typedef struct desc_struct
 {
 	unsigned long a, b;

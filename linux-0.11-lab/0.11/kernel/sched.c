@@ -433,7 +433,9 @@ void sched_init(void)
 		p++;
 	}
 	/* Clear NT, so that we won't have troubles with that later on */
+#if ASM_NO_64
 	__asm__("pushfl ; andl $0xffffbfff,(%esp) ; popfl");
+#endif
 	ltr(0);
 	lldt(0);
 	outb_p(0x36, 0x43);			/* binary, mode 3, LSB/MSB, ch 0 */

@@ -9,10 +9,7 @@
 /* Begin PBXBuildFile section */
 		C41EDA7E228E9AE4006D8303 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA03228E9AE4006D8303 /* Makefile */; };
 		C41EDA7F228E9AE4006D8303 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA04228E9AE4006D8303 /* main.c */; };
-		C41EDA80228E9AE4006D8303 /* head.s in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA0A228E9AE4006D8303 /* head.s */; };
-		C41EDA81228E9AE4006D8303 /* setup.s in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA0B228E9AE4006D8303 /* setup.s */; };
 		C41EDA82228E9AE4006D8303 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA0C228E9AE4006D8303 /* Makefile */; };
-		C41EDA83228E9AE4006D8303 /* bootsect.s in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA0E228E9AE4006D8303 /* bootsect.s */; };
 		C41EDA84228E9AE4006D8303 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA12228E9AE4006D8303 /* Makefile */; };
 		C41EDA85228E9AE4006D8303 /* execve.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA39228E9AE4006D8303 /* execve.c */; };
 		C41EDA86228E9AE4006D8303 /* ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA3A228E9AE4006D8303 /* ctype.c */; };
@@ -27,7 +24,6 @@
 		C41EDA8F228E9AE4006D8303 /* dup.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA43228E9AE4006D8303 /* dup.c */; };
 		C41EDA90228E9AE4006D8303 /* open.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA44228E9AE4006D8303 /* open.c */; };
 		C41EDA91228E9AE4006D8303 /* close.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA45228E9AE4006D8303 /* close.c */; };
-		C41EDA92228E9AE4006D8303 /* page.s in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA47228E9AE4006D8303 /* page.s */; };
 		C41EDA93228E9AE4006D8303 /* memory.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA48228E9AE4006D8303 /* memory.c */; };
 		C41EDA94228E9AE4006D8303 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA49228E9AE4006D8303 /* Makefile */; };
 		C41EDA95228E9AE4006D8303 /* super.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA4B228E9AE4006D8303 /* super.c */; };
@@ -48,7 +44,6 @@
 		C41EDAA4228E9AE4006D8303 /* fcntl.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA5A228E9AE4006D8303 /* fcntl.c */; };
 		C41EDAA5228E9AE4006D8303 /* open.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA5B228E9AE4006D8303 /* open.c */; };
 		C41EDAA6228E9AE4006D8303 /* char_dev.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA5C228E9AE4006D8303 /* char_dev.c */; };
-		C41EDAA7228E9AE4006D8303 /* system_call.s in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA5E228E9AE4006D8303 /* system_call.s */; };
 		C41EDAA8228E9AE4006D8303 /* sched.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA5F228E9AE4006D8303 /* sched.c */; };
 		C41EDAA9228E9AE4006D8303 /* sys.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA60228E9AE4006D8303 /* sys.c */; };
 		C41EDAAA228E9AE4006D8303 /* mktime.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA61228E9AE4006D8303 /* mktime.c */; };
@@ -59,14 +54,11 @@
 		C41EDAAF228E9AE4006D8303 /* exit.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA66228E9AE4006D8303 /* exit.c */; };
 		C41EDAB0228E9AE4006D8303 /* panic.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA67228E9AE4006D8303 /* panic.c */; };
 		C41EDAB1228E9AE4006D8303 /* vsprintf.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA68228E9AE4006D8303 /* vsprintf.c */; };
-		C41EDAB2228E9AE4006D8303 /* asm.s in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA69228E9AE4006D8303 /* asm.s */; };
 		C41EDAB3228E9AE4006D8303 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA6B228E9AE4006D8303 /* Makefile */; };
 		C41EDAB4228E9AE4006D8303 /* math_emulate.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA6C228E9AE4006D8303 /* math_emulate.c */; };
 		C41EDAB5228E9AE4006D8303 /* serial.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA6E228E9AE4006D8303 /* serial.c */; };
 		C41EDAB6228E9AE4006D8303 /* tty_ioctl.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA6F228E9AE4006D8303 /* tty_ioctl.c */; };
-		C41EDAB7228E9AE4006D8303 /* kb.S in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA70228E9AE4006D8303 /* kb.S */; };
 		C41EDAB8228E9AE4006D8303 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA71228E9AE4006D8303 /* Makefile */; };
-		C41EDAB9228E9AE4006D8303 /* rs_io.s in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA72228E9AE4006D8303 /* rs_io.s */; };
 		C41EDABA228E9AE4006D8303 /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA73228E9AE4006D8303 /* console.c */; };
 		C41EDABB228E9AE4006D8303 /* tty_io.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA75228E9AE4006D8303 /* tty_io.c */; };
 		C41EDABC228E9AE4006D8303 /* ramdisk.c in Sources */ = {isa = PBXBuildFile; fileRef = C41EDA78228E9AE4006D8303 /* ramdisk.c */; };
@@ -535,12 +527,9 @@
 				C41EDAAD228E9AE4006D8303 /* Makefile in Sources */,
 				C41EDAB4228E9AE4006D8303 /* math_emulate.c in Sources */,
 				C41EDA87228E9AE4006D8303 /* Makefile in Sources */,
-				C41EDA92228E9AE4006D8303 /* page.s in Sources */,
 				C41EDA91228E9AE4006D8303 /* close.c in Sources */,
-				C41EDAA7228E9AE4006D8303 /* system_call.s in Sources */,
 				C41EDAA2228E9AE4006D8303 /* read_write.c in Sources */,
 				C41EDA9E228E9AE4006D8303 /* truncate.c in Sources */,
-				C41EDAB2228E9AE4006D8303 /* asm.s in Sources */,
 				C41EDAB8228E9AE4006D8303 /* Makefile in Sources */,
 				C41EDAB5228E9AE4006D8303 /* serial.c in Sources */,
 				C41EDA9D228E9AE4006D8303 /* inode.c in Sources */,
@@ -559,7 +548,6 @@
 				C41EDABC228E9AE4006D8303 /* ramdisk.c in Sources */,
 				C41EDA85228E9AE4006D8303 /* execve.c in Sources */,
 				C41EDA93228E9AE4006D8303 /* memory.c in Sources */,
-				C41EDA80228E9AE4006D8303 /* head.s in Sources */,
 				C41EDA99228E9AE4006D8303 /* exec.c in Sources */,
 				C41EDAB6228E9AE4006D8303 /* tty_ioctl.c in Sources */,
 				C41EDAAA228E9AE4006D8303 /* mktime.c in Sources */,
@@ -570,16 +558,12 @@
 				C41EDA98228E9AE4006D8303 /* pipe.c in Sources */,
 				C41EDAB1228E9AE4006D8303 /* vsprintf.c in Sources */,
 				C41EDA90228E9AE4006D8303 /* open.c in Sources */,
-				C41EDA83228E9AE4006D8303 /* bootsect.s in Sources */,
 				C41EDAA5228E9AE4006D8303 /* open.c in Sources */,
-				C41EDAB7228E9AE4006D8303 /* kb.S in Sources */,
 				C41EDA8C228E9AE4006D8303 /* malloc.c in Sources */,
 				C41EDA95228E9AE4006D8303 /* super.c in Sources */,
-				C41EDA81228E9AE4006D8303 /* setup.s in Sources */,
 				C41EDA8B228E9AE4006D8303 /* setsid.c in Sources */,
 				C41EDA97228E9AE4006D8303 /* buffer.c in Sources */,
 				C41EDAAC228E9AE4006D8303 /* traps.c in Sources */,
-				C41EDAB9228E9AE4006D8303 /* rs_io.s in Sources */,
 				C41EDAA9228E9AE4006D8303 /* sys.c in Sources */,
 				C41EDA9F228E9AE4006D8303 /* ioctl.c in Sources */,
 				C41EDAA0228E9AE4006D8303 /* namei.c in Sources */,
@@ -714,6 +698,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B5Y4Q4J39L;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../linux-0.11-lab/0.11/include\"";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/TestLinux011/linux-0.11-lab/0.11/lib",
@@ -735,6 +720,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = B5Y4Q4J39L;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../linux-0.11-lab/0.11/include\"";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/TestLinux011/linux-0.11-lab/0.11/lib",
