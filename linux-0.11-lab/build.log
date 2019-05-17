@@ -1,0 +1,106 @@
+(cd src; make Image)
+(cd boot; make  head.o)
+i386-elf-as -g --32 -o head.o head.s
+(cd init; make  main.o)
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o main.o main.c
+(cd kernel; make )
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o sched.o sched.c
+i386-elf-as -g --32 -o system_call.o system_call.s
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o traps.o traps.c
+i386-elf-as -g --32 -o asm.o asm.s
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o fork.o fork.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o panic.o panic.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o printk.o printk.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o vsprintf.o vsprintf.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o sys.o sys.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o exit.o exit.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o signal.o signal.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o mktime.o mktime.c
+i386-elf-ld -m elf_i386 -r -o kernel.o sched.o system_call.o traps.o asm.o fork.o panic.o printk.o vsprintf.o sys.o exit.o signal.o mktime.o
+sync
+(cd mm; make )
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o memory.o memory.c
+i386-elf-as -g --32 -o page.o page.s
+i386-elf-ld -m elf_i386 -r -o mm.o memory.o page.o
+(cd fs; make )
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o open.o open.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o read_write.o read_write.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o inode.o inode.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o file_table.o file_table.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o buffer.o buffer.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o super.o super.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o block_dev.o block_dev.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o char_dev.o char_dev.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o file_dev.o file_dev.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o stat.o stat.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o exec.o exec.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o pipe.o pipe.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o namei.o namei.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o bitmap.o bitmap.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o fcntl.o fcntl.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o ioctl.o ioctl.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o truncate.o truncate.c
+i386-elf-ld -m elf_i386 -r -o fs.o open.o read_write.o inode.o file_table.o buffer.o super.o block_dev.o char_dev.o file_dev.o stat.o exec.o pipe.o namei.o bitmap.o fcntl.o ioctl.o truncate.o
+(cd kernel/blk_drv; make )
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../../include -DRAMDISK_START=256 -c -o ll_rw_blk.o ll_rw_blk.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../../include -DRAMDISK_START=256 -c -o floppy.o floppy.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../../include -DRAMDISK_START=256 -c -o hd.o hd.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../../include -DRAMDISK_START=256 -c -o ramdisk.o ramdisk.c
+i386-elf-ar rcs blk_drv.a ll_rw_blk.o floppy.o hd.o ramdisk.o
+sync
+(cd kernel/chr_drv; make )
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../../include -c -o tty_io.o tty_io.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../../include -c -o console.o console.c
+i386-elf-cpp -nostdinc -I../../include kb.S -o keyboard.s
+i386-elf-as -g --32 -o keyboard.o keyboard.s
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../../include -c -o serial.o serial.c
+i386-elf-as -g --32 -o rs_io.o rs_io.s
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../../include -c -o tty_ioctl.o tty_ioctl.c
+i386-elf-ar rcs chr_drv.a tty_io.o console.o keyboard.o serial.o rs_io.o tty_ioctl.o
+sync
+(cd kernel/math; make )
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../../include -c -o math_emulate.o math_emulate.c
+i386-elf-ar rcs math.a math_emulate.o
+sync
+(cd lib; make )
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o ctype.o ctype.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o _exit.o _exit.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o open.o open.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o close.o close.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o errno.o errno.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o write.o write.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o dup.o dup.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o setsid.o setsid.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o execve.o execve.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o wait.o wait.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o string.o string.c
+i386-elf-gcc -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce  -I../include -c -o malloc.o malloc.c
+i386-elf-ar rcs lib.a ctype.o _exit.o open.o close.o errno.o write.o dup.o setsid.o execve.o wait.o string.o malloc.o
+sync
+i386-elf-ld -m elf_i386 -Ttext 0 -e startup_32 boot/head.o init/main.o \
+	kernel/kernel.o mm/mm.o fs/fs.o \
+	kernel/blk_drv/blk_drv.a kernel/chr_drv/chr_drv.a \
+	kernel/math/math.a \
+	lib/lib.a \
+	-o kernel.sym
+nm kernel.sym | grep -v '\(compiled\)\|\(\.o$\)\|\( [aU] \)\|\(\.\.ng$\)\|\(LASH[RL]DI\)'| sort > kernel.map
+cp -f kernel.sym kernel.tmp
+i386-elf-strip kernel.tmp
+i386-elf-objcopy -O binary -R .note -R .comment kernel.tmp kernel.bin
+rm kernel.tmp
+(cd boot; make )
+i386-elf-as -g --32 -o bootsect.o bootsect.s --defsym SYS_SIZE=8715
+i386-elf-ld -m elf_i386 -Ttext 0 -e _start -o bootsect bootsect.o
+cp -f bootsect bootsect.sym
+nm bootsect.sym | grep -v '\(compiled\)\|\(\.o$\)\|\( [aU] \)\|\(\.\.ng$\)\|\(LASH[RL]DI\)'| sort > bootsect.map
+i386-elf-objcopy -R .pdr -R .comment -R.note -S -O binary bootsect
+i386-elf-as -g --32 -o setup.o setup.s
+i386-elf-ld -m elf_i386 -Ttext 0 -e _start -o setup setup.o
+cp -f setup setup.sym
+nm setup.sym | grep -v '\(compiled\)\|\(\.o$\)\|\( [aU] \)\|\(\.\.ng$\)\|\(LASH[RL]DI\)'| sort > setup.map
+i386-elf-objcopy -R .pdr -R .comment -R.note -S -O binary setup
+(cd boot; make )
+make[2]: Nothing to be done for `all'.
+RAMDISK_START=256 tools/build.sh boot/bootsect boot/setup kernel.bin Image
+rm -f kernel.bin
+sync
