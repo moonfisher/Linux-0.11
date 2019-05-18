@@ -12,8 +12,13 @@ typedef struct desc_struct
 	unsigned long a, b;
 } desc_table[256];
 
-extern unsigned long pg_dir[1024];
-extern desc_table idt, gdt;
+#if ASM_NO_64
+    extern unsigned long pg_dir[1024];
+    extern desc_table idt, gdt;
+#else
+    unsigned long pg_dir[1024];
+    desc_table idt, gdt;
+#endif
 
 #define GDT_NUL 0
 #define GDT_CODE 1

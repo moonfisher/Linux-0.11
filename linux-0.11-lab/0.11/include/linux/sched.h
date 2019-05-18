@@ -202,6 +202,8 @@ extern void wake_up(struct task_struct **p);
                     "m"(*&__tmp.b),                      \
                     "d"(_TSS(n)), "c"((long)task[n]));   \
         }
+#else
+    #define switch_to(n)
 #endif
 
 #define PAGE_ALIGN(n) (((n) + 0xfff) & 0xfffff000)
@@ -229,6 +231,9 @@ extern void wake_up(struct task_struct **p);
                 "pop %%edx" ::"m"(*(addr)), \
                 "m"(*((addr) + 6)),         \
                 "d"(limit))
+#else
+    #define _set_base(addr, base)
+    #define _set_limit(addr, limit)
 #endif
 
 #define set_base(ldt, base) _set_base(((char *)&(ldt)), (base))
@@ -270,8 +275,8 @@ static inline unsigned long _get_base(char *addr)
     unsigned long __limit; \
     __asm__("lsll %1,%0\n\tincl %0":"=r" (__limit):"r" (segment)); \
     __limit; })
-
-    #endif
 #else
+    #define get_limit(segment) (0)
+#endif
 
 #endif

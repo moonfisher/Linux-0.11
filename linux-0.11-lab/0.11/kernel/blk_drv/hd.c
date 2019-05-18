@@ -68,7 +68,12 @@ static struct hd_struct
 #define port_write(port, buf, nr) \
 	__asm__("cld;rep;outsw" ::"d"(port), "S"(buf), "c"(nr))
 
-extern void hd_interrupt(void);
+#if ASM_NO_64
+    extern void hd_interrupt(void);
+#else
+    void hd_interrupt(void){};
+#endif
+
 extern void rd_load(void);
 
 /* This may be used only once, enforced by 'static int callable' */

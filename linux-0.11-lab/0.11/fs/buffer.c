@@ -26,7 +26,12 @@
 #include <asm/system.h>
 #include <asm/io.h>
 
-extern int end;
+#if ASM_NO_64
+    extern int end;
+#else
+    int end;
+#endif
+
 extern void put_super(int);
 extern void invalidate_inodes(int);
 

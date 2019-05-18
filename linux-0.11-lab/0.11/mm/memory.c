@@ -39,6 +39,8 @@ static inline void oom(void)
 #if ASM_NO_64
     #define invalidate() \
         __asm__("movl %%eax,%%cr3" ::"a"(0))
+#else
+    #define invalidate()
 #endif
 
 /* these are not to be changed without changing head.s etc */

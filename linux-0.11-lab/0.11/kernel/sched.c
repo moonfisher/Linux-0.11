@@ -17,7 +17,6 @@
 #include <asm/system.h>
 #include <asm/io.h>
 #include <asm/segment.h>
-
 #include <signal.h>
 
 #define _S(nr) (1 << ((nr)-1))
@@ -45,10 +44,15 @@ void show_stat(void)
 
 #define LATCH (1193180 / HZ)
 
-extern void mem_use(void);
-
-extern int timer_interrupt(void);
-extern int system_call(void);
+#if ASM_NO_64
+    extern void mem_use(void);
+    extern int timer_interrupt(void);
+    extern int system_call(void);
+#else
+    void mem_use(void){};
+    int timer_interrupt(void){return 0;};
+    int system_call(void){return 0;};
+#endif
 
 union task_union {
 	struct task_struct task;

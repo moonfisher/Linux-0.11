@@ -20,8 +20,13 @@
 
 #define WAKEUP_CHARS (TTY_BUF_SIZE / 4)
 
-extern void rs1_interrupt(void);
-extern void rs2_interrupt(void);
+#if ASM_NO_64
+    extern void rs1_interrupt(void);
+    extern void rs2_interrupt(void);
+#else
+    void rs1_interrupt(void){};
+    void rs2_interrupt(void){};
+#endif
 
 static void init(int port)
 {

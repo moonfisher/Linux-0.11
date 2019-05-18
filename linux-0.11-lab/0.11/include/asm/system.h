@@ -14,6 +14,8 @@
                 "movw %%ax,%%fs\n\t"       \
                 "movw %%ax,%%gs" ::        \
                     : "ax")
+#else
+    #define move_to_user_mode()
 #endif
 
 #define sti() __asm__("sti" ::)

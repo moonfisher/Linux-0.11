@@ -102,8 +102,13 @@ static struct floppy_struct
  * and ND is set means no DMA. Hardcoded to 6 (HLD=6ms, use DMA).
  */
 
-extern void floppy_interrupt(void);
-extern char tmp_floppy_area[1024];
+#if ASM_NO_64
+    extern void floppy_interrupt(void);
+    extern char tmp_floppy_area[1024];
+#else
+    void floppy_interrupt(void){};
+    char tmp_floppy_area[1024];
+#endif
 
 /*
  * These are global variables, as that's the easiest way to give

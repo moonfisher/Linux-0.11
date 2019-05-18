@@ -53,7 +53,11 @@
 
 #define NPAR 16
 
-extern void keyboard_interrupt(void);
+#if ASM_NO_64
+    extern void keyboard_interrupt(void);
+#else
+    void keyboard_interrupt(void){};
+#endif
 
 static unsigned char video_type;		/* Type of display being used	*/
 static unsigned long video_num_columns; /* Number of text columns	*/

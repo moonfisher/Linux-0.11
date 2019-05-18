@@ -1,6 +1,14 @@
 extern int sys_setup(void);
 extern int sys_exit(void);
-extern int sys_fork(void);
+
+#if ASM_NO_64
+    extern int sys_fork(void);
+    extern int sys_execve(void);
+#else
+    int sys_fork(void){return 0;};
+    int sys_execve(void){return 0;};
+#endif
+
 extern int sys_read(void);
 extern int sys_write(void);
 extern int sys_open(void);
@@ -9,7 +17,7 @@ extern int sys_waitpid(void);
 extern int sys_creat(void);
 extern int sys_link(void);
 extern int sys_unlink(void);
-extern int sys_execve(void);
+
 extern int sys_chdir(void);
 extern int sys_time(void);
 extern int sys_mknod(void);
