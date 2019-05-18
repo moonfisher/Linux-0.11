@@ -105,7 +105,7 @@ int sys_time(long *tloc)
 {
 	int i;
 
-	i = CURRENT_TIME;
+	i = (int)CURRENT_TIME;
 	if (tloc)
 	{
 		verify_area(tloc, 4);
@@ -169,7 +169,7 @@ int sys_times(struct tms *tbuf)
 		put_fs_long(current->cutime, (unsigned long *)&tbuf->tms_cutime);
 		put_fs_long(current->cstime, (unsigned long *)&tbuf->tms_cstime);
 	}
-	return jiffies;
+	return (int)jiffies;
 }
 
 int sys_brk(unsigned long end_data_seg)
@@ -177,7 +177,7 @@ int sys_brk(unsigned long end_data_seg)
 	if (end_data_seg >= current->end_code &&
 		end_data_seg < current->start_stack - 16384)
 		current->brk = end_data_seg;
-	return current->brk;
+	return (int)(current->brk);
 }
 
 /*
@@ -190,9 +190,9 @@ int sys_setpgid(int pid, int pgid)
 	int i;
 
 	if (!pid)
-		pid = current->pid;
+		pid = (int)(current->pid);
 	if (!pgid)
-		pgid = current->pid;
+		pgid = (int)(current->pid);
 	for (i = 0; i < NR_TASKS; i++)
 		if (task[i] && task[i]->pid == pid)
 		{
@@ -208,7 +208,7 @@ int sys_setpgid(int pid, int pgid)
 
 int sys_getpgrp(void)
 {
-	return current->pgrp;
+	return (int)(current->pgrp);
 }
 
 int sys_setsid(void)
@@ -218,7 +218,7 @@ int sys_setsid(void)
 	current->leader = 1;
 	current->session = current->pgrp = current->pid;
 	current->tty = -1;
-	return current->pgrp;
+	return (int)(current->pgrp);
 }
 
 int sys_uname(struct utsname *name)

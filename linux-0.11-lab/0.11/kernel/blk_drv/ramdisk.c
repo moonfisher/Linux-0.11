@@ -27,7 +27,7 @@ void do_rd_request(void)
 
 	INIT_REQUEST;
 	addr = rd_start + (CURRENT->sector << 9);
-	len = CURRENT->nr_sectors << 9;
+	len = (int)(CURRENT->nr_sectors << 9);
 	if ((MINOR(CURRENT->dev) != 1) || (addr + len > rd_start + rd_length))
 	{
 		end_request(0);

@@ -317,7 +317,7 @@ void do_hd_request(void)
 
 	INIT_REQUEST;
 	dev = MINOR(CURRENT->dev);
-	block = CURRENT->sector;
+	block = (unsigned int)(CURRENT->sector);
 	if (dev >= 5 * NR_HD || (block + 2) > (hd[dev].start_sect + hd[dev].nr_sects - 1))
 	{
 		end_request(0);
@@ -334,7 +334,7 @@ void do_hd_request(void)
 			: "0"(block), "1"(0),
 			  "r"(hd_info[dev].head));
 	sec++;
-	nsect = CURRENT->nr_sectors;
+	nsect = (int)(CURRENT->nr_sectors);
 	if (reset)
 	{
 		reset = 0;

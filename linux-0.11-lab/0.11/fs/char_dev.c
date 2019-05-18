@@ -47,7 +47,7 @@ static int rw_kmem(int rw, char *buf, int count, off_t *pos)
 
 static int rw_port(int rw, char *buf, int count, off_t *pos)
 {
-	int i = *pos;
+	int i = (int)*pos;
 
 	while (count-- > 0 && i < 65536)
 	{

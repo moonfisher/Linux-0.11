@@ -103,7 +103,7 @@ static struct buffer_head *find_entry(struct m_inode **dir,
 	if (namelen > NAME_LEN)
 		namelen = NAME_LEN;
 #endif
-	entries = (*dir)->i_size / (sizeof(struct dir_entry));
+	entries = (int)((*dir)->i_size / (sizeof(struct dir_entry)));
 	*res_dir = NULL;
 	if (!namelen)
 		return NULL;

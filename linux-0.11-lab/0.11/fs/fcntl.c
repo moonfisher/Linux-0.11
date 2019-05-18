@@ -53,7 +53,7 @@ int sys_fcntl(unsigned int fd, unsigned int cmd, unsigned long arg)
 	switch (cmd)
 	{
 	case F_DUPFD:
-		return dupfd(fd, arg);
+		return dupfd(fd, (unsigned int)arg);
 	case F_GETFD:
 		return (current->close_on_exec >> fd) & 1;
 	case F_SETFD:

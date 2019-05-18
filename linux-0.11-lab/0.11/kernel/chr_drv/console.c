@@ -385,7 +385,7 @@ static void delete_char(void)
 
 	if (x >= video_num_columns)
 		return;
-	i = x;
+	i = (int)x;
 	while (++i < video_num_columns)
 	{
 		*p = *(p + 1);
@@ -398,8 +398,8 @@ static void delete_line(void)
 {
 	int oldtop, oldbottom;
 
-	oldtop = top;
-	oldbottom = bottom;
+	oldtop = (int)top;
+	oldbottom = (int)bottom;
 	top = y;
 	bottom = video_num_lines;
 	scrup();
@@ -527,7 +527,7 @@ void con_write(struct tty_struct *tty)
 			if (c == '[')
 				state = 2;
 			else if (c == 'E')
-				gotoxy(0, y + 1);
+				gotoxy(0, (unsigned int)(y + 1));
 			else if (c == 'M')
 				ri();
 			else if (c == 'D')
@@ -567,44 +567,44 @@ void con_write(struct tty_struct *tty)
 			case '`':
 				if (par[0])
 					par[0]--;
-				gotoxy(par[0], y);
+				gotoxy((unsigned int)par[0], (unsigned int)y);
 				break;
 			case 'A':
 				if (!par[0])
 					par[0]++;
-				gotoxy(x, y - par[0]);
+				gotoxy((unsigned int)x, (unsigned int)(y - par[0]));
 				break;
 			case 'B':
 			case 'e':
 				if (!par[0])
 					par[0]++;
-				gotoxy(x, y + par[0]);
+				gotoxy((unsigned int)x, (unsigned int)(y + par[0]));
 				break;
 			case 'C':
 			case 'a':
 				if (!par[0])
 					par[0]++;
-				gotoxy(x + par[0], y);
+				gotoxy((unsigned int)(x + par[0]), (unsigned int)y);
 				break;
 			case 'D':
 				if (!par[0])
 					par[0]++;
-				gotoxy(x - par[0], y);
+				gotoxy((unsigned int)(x - par[0]), (unsigned int)y);
 				break;
 			case 'E':
 				if (!par[0])
 					par[0]++;
-				gotoxy(0, y + par[0]);
+				gotoxy(0, (unsigned int)(y + par[0]));
 				break;
 			case 'F':
 				if (!par[0])
 					par[0]++;
-				gotoxy(0, y - par[0]);
+				gotoxy(0, (unsigned int)(y - par[0]));
 				break;
 			case 'd':
 				if (par[0])
 					par[0]--;
-				gotoxy(x, par[0]);
+				gotoxy((unsigned int)x, (unsigned int)par[0]);
 				break;
 			case 'H':
 			case 'f':
@@ -612,16 +612,16 @@ void con_write(struct tty_struct *tty)
 					par[0]--;
 				if (par[1])
 					par[1]--;
-				gotoxy(par[1], par[0]);
+				gotoxy((unsigned int)par[1], (unsigned int)par[0]);
 				break;
 			case 'J':
-				csi_J(par[0]);
+				csi_J((unsigned int)par[0]);
 				break;
 			case 'K':
-				csi_K(par[0]);
+				csi_K((unsigned int)par[0]);
 				break;
 			case 'L':
-				csi_L(par[0]);
+				csi_L((unsigned int)par[0]);
 				break;
 			case 'M':
 				csi_M(par[0]);

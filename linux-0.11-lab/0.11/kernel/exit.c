@@ -141,8 +141,8 @@ int do_exit(long code)
 	if (current->leader)
 		kill_session();
 	current->state = TASK_ZOMBIE;
-	current->exit_code = code;
-	tell_father(current->father);
+	current->exit_code = (int)code;
+	tell_father((int)(current->father));
 	schedule();
 	return (-1); /* just to suppress warnings */
 }
@@ -187,11 +187,11 @@ repeat:
 			if (!(options & WUNTRACED))
 				continue;
 			put_fs_long(0x7f, stat_addr);
-			return (*p)->pid;
+			return (int)((*p)->pid);
 		case TASK_ZOMBIE:
 			current->cutime += (*p)->utime;
 			current->cstime += (*p)->stime;
-			flag = (*p)->pid;
+			flag = (int)((*p)->pid);
 			code = (*p)->exit_code;
 			release(*p);
 			put_fs_long(code, stat_addr);

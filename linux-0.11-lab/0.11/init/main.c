@@ -22,7 +22,6 @@
  */
 static inline int fork(void) __attribute__((always_inline));
 static inline int pause(void) __attribute__((always_inline));
-static inline _syscall0(int, fork) static inline _syscall0(int, pause) static inline _syscall1(int, setup, void *, BIOS) static inline _syscall0(int, sync)
 
 #include <linux/tty.h>
 #include <linux/sched.h>
@@ -38,7 +37,7 @@ static inline _syscall0(int, fork) static inline _syscall0(int, pause) static in
 
 #include <linux/fs.h>
 
-	static char printbuf[1024];
+static char printbuf[1024];
 
 extern int vsprintf();
 extern void init(void);
@@ -51,12 +50,60 @@ extern long rd_init(long mem_start, int length);
 extern long kernel_mktime(struct tm *tm);
 extern long startup_time;
 
+static inline int setup(void *BIOS)
+{
+    long __res;
+    __asm__ volatile("int $0x80"
+                     : "=a"(__res)
+                     : "0"(__NR_setup), "b"((long)(BIOS)));
+    if (__res >= 0)
+        return (int)__res;
+    errno = (int)-__res;
+    return -1;
+}
+
+static inline int fork(void)
+{
+    long __res;
+    __asm__ volatile("int $0x80"
+                     : "=a"(__res)
+                     : "0"(__NR_fork));
+    if (__res >= 0)
+        return (int)__res;
+    errno = (int)-__res;
+    return -1;
+}
+
+static inline int sync(void)
+{
+    long __res;
+    __asm__ volatile("int $0x80"
+                     : "=a"(__res)
+                     : "0"(__NR_sync));
+    if (__res >= 0)
+        return (int)__res;
+    errno = (int)-__res;
+    return -1;
+}
+
+static inline int pause(void)
+{
+    long __res;
+    __asm__ volatile("int $0x80"
+                     : "=a"(__res)
+                     : "0"(__NR_pause));
+    if (__res >= 0)
+        return (int)__res;
+    errno = (int)-__res;
+    return -1;
+}
+
 /*
  * This is set up by the setup-routine at boot-time
  */
-#define EXT_MEM_K (*(unsigned short *)0x90002)
-#define DRIVE_INFO (*(struct drive_info *)0x90080)
-#define ORIG_ROOT_DEV (*(unsigned short *)0x901FC)
+#define EXT_MEM_K       (*(unsigned short *)0x90002)
+#define DRIVE_INFO      (*(struct drive_info *)0x90080)
+#define ORIG_ROOT_DEV   (*(unsigned short *)0x901FC)
 
 /*
  * Yeah, yeah, it's ugly, but I cannot find how to do this correctly

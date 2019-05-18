@@ -284,7 +284,7 @@ int tty_read(unsigned channel, char *buf, int nr)
 			if (c == EOF_CHAR(tty) || c == 10)
 				tty->secondary.data--;
 			if (c == EOF_CHAR(tty) && L_CANON(tty))
-				return (b - buf);
+				return (int)(b - buf);
 			else
 			{
 				put_fs_byte(c, b++);
@@ -310,7 +310,7 @@ int tty_read(unsigned channel, char *buf, int nr)
 	current->alarm = oldalarm;
 	if (current->signal && !(b - buf))
 		return -EINTR;
-	return (b - buf);
+	return (int)(b - buf);
 }
 
 int tty_write(unsigned channel, char *buf, int nr)
@@ -354,7 +354,7 @@ int tty_write(unsigned channel, char *buf, int nr)
 		if (nr > 0)
 			schedule();
 	}
-	return (b - buf);
+	return (int)(b - buf);
 }
 
 /*

@@ -143,14 +143,13 @@ void schedule(void)
 			if (!*--p)
 				continue;
 			if ((*p)->state == TASK_RUNNING && (*p)->counter > c)
-				c = (*p)->counter, next = i;
+				c = (int)((*p)->counter), next = i;
 		}
 		if (c)
 			break;
 		for (p = &LAST_TASK; p > &FIRST_TASK; --p)
 			if (*p)
-				(*p)->counter = ((*p)->counter >> 1) +
-								(*p)->priority;
+				(*p)->counter = ((*p)->counter >> 1) + (*p)->priority;
 	}
 	switch_to(next);
 }
@@ -369,22 +368,22 @@ void do_timer(long cpl)
 
 int sys_alarm(long seconds)
 {
-	int old = current->alarm;
+	long old = current->alarm;
 
 	if (old)
 		old = (old - jiffies) / HZ;
 	current->alarm = (seconds > 0) ? (jiffies + HZ * seconds) : 0;
-	return (old);
+	return (int)(old);
 }
 
 int sys_getpid(void)
 {
-	return current->pid;
+	return (int)(current->pid);
 }
 
 int sys_getppid(void)
 {
-	return current->father;
+	return (int)(current->father);
 }
 
 int sys_getuid(void)

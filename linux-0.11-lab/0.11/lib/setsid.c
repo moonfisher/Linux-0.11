@@ -7,4 +7,15 @@
 #define __LIBRARY__
 #include <unistd.h>
 
-_syscall0(pid_t, setsid)
+int setsid(void)
+{
+    long __res;
+    __asm__ volatile("int $0x80"
+                     : "=a"(__res)
+                     : "0"(__NR_setsid));
+    if (__res >= 0)
+        return (pid_t)__res;
+    errno = (int)-__res;
+    return -1;
+}
+

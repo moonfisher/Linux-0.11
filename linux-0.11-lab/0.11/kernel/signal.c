@@ -14,12 +14,12 @@ void do_exit(int error_code);
 
 int sys_sgetmask()
 {
-	return current->blocked;
+	return (int)(current->blocked);
 }
 
 int sys_ssetmask(int newmask)
 {
-	int old = current->blocked;
+	int old = (int)(current->blocked);
 
 	current->blocked = newmask & ~(1 << (SIGKILL - 1));
 	return old;
@@ -58,7 +58,7 @@ int sys_signal(int signum, long handler, long restorer)
 	tmp.sa_restorer = (void (*)(void))restorer;
 	handler = (long)current->sigaction[signum - 1].sa_handler;
 	current->sigaction[signum - 1] = tmp;
-	return handler;
+	return (int)handler;
 }
 
 int sys_sigaction(int signum, const struct sigaction *action,

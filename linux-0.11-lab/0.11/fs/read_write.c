@@ -44,14 +44,14 @@ int sys_lseek(unsigned int fd, off_t offset, int origin)
 		file->f_pos += offset;
 		break;
 	case 2:
-		if ((tmp = file->f_inode->i_size + offset) < 0)
+		if ((tmp = (int)(file->f_inode->i_size + offset)) < 0)
 			return -EINVAL;
 		file->f_pos = tmp;
 		break;
 	default:
 		return -EINVAL;
 	}
-	return file->f_pos;
+	return (int)(file->f_pos);
 }
 
 int sys_read(unsigned int fd, char *buf, int count)
@@ -74,7 +74,7 @@ int sys_read(unsigned int fd, char *buf, int count)
 	if (S_ISDIR(inode->i_mode) || S_ISREG(inode->i_mode))
 	{
 		if (count + file->f_pos > inode->i_size)
-			count = inode->i_size - file->f_pos;
+			count = (int)(inode->i_size - file->f_pos);
 		if (count <= 0)
 			return 0;
 		return file_read(inode, file, buf, count);

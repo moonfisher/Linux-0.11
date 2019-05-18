@@ -453,7 +453,7 @@ void do_fd_request(void)
 	if (current_drive != CURRENT_DEV)
 		seek = 1;
 	current_drive = CURRENT_DEV;
-	block = CURRENT->sector;
+	block = (unsigned int)(CURRENT->sector);
 	if (block + 2 > floppy->size)
 	{
 		end_request(0);
