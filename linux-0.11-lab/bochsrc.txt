@@ -637,7 +637,7 @@ private_colormap: enabled=0
 #floppya: 1_44=a:, status=inserted
 #floppya: 1_44=a.img, status=inserted, write_protected=1
 #floppya: 1_44=/dev/rfd0a, status=inserted
-floppya:1_44=rootfs/hdc-0.11.img,status=inserted
+floppya:1_44=0.11/Image,status=inserted
 
 #=======================================================================
 # FLOPPYB:
@@ -740,8 +740,8 @@ ata0-master: type=disk, mode=flat, path="rootfs/hdc-0.11.img"
 #   boot: network, disk
 #   boot: cdrom, floppy, disk
 #=======================================================================
-#boot: floppy
-boot: disk
+boot: floppy
+#boot: disk
 
 #=======================================================================
 # FLOPPY_BOOTSIG_CHECK: disabled=[0|1]
