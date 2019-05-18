@@ -352,7 +352,7 @@ static void respond(struct tty_struct *tty)
 
 static void insert_char(void)
 {
-	int i = x;
+	int i = (int)x;
 	unsigned short tmp, old = video_erase_char;
 	unsigned short *p = (unsigned short *)pos;
 
@@ -369,8 +369,8 @@ static void insert_line(void)
 {
 	int oldtop, oldbottom;
 
-	oldtop = top;
-	oldbottom = bottom;
+	oldtop = (int)top;
+	oldbottom = (int)bottom;
 	top = y;
 	bottom = video_num_lines;
 	scrdown();
@@ -410,7 +410,7 @@ static void delete_line(void)
 static void csi_at(unsigned int nr)
 {
 	if (nr > video_num_columns)
-		nr = video_num_columns;
+		nr = (unsigned int)video_num_columns;
 	else if (!nr)
 		nr = 1;
 	while (nr--)
@@ -420,7 +420,7 @@ static void csi_at(unsigned int nr)
 static void csi_L(unsigned int nr)
 {
 	if (nr > video_num_lines)
-		nr = video_num_lines;
+		nr = (unsigned int)video_num_lines;
 	else if (!nr)
 		nr = 1;
 	while (nr--)
@@ -430,7 +430,7 @@ static void csi_L(unsigned int nr)
 static void csi_P(unsigned int nr)
 {
 	if (nr > video_num_columns)
-		nr = video_num_columns;
+		nr = (unsigned int)video_num_columns;
 	else if (!nr)
 		nr = 1;
 	while (nr--)
@@ -440,7 +440,7 @@ static void csi_P(unsigned int nr)
 static void csi_M(unsigned int nr)
 {
 	if (nr > video_num_lines)
-		nr = video_num_lines;
+		nr = (unsigned int)video_num_lines;
 	else if (!nr)
 		nr = 1;
 	while (nr--)
@@ -452,8 +452,8 @@ static int saved_y = 0;
 
 static void save_cur(void)
 {
-	saved_x = x;
-	saved_y = y;
+	saved_x = (int)x;
+	saved_y = (int)y;
 }
 
 static void restore_cur(void)
@@ -624,13 +624,13 @@ void con_write(struct tty_struct *tty)
 				csi_L((unsigned int)par[0]);
 				break;
 			case 'M':
-				csi_M(par[0]);
+				csi_M((unsigned int)par[0]);
 				break;
 			case 'P':
-				csi_P(par[0]);
+				csi_P((unsigned int)par[0]);
 				break;
 			case '@':
-				csi_at(par[0]);
+				csi_at((unsigned int)par[0]);
 				break;
 			case 'm':
 				csi_m();

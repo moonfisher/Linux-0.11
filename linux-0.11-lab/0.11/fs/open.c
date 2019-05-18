@@ -175,7 +175,7 @@ int sys_open(const char *filename, int flag, int mode)
 			if (current->leader && current->tty < 0)
 			{
 				current->tty = MINOR(inode->i_zone[0]);
-				tty_table[current->tty].pgrp = current->pgrp;
+				tty_table[current->tty].pgrp = (int)(current->pgrp);
 			}
 		}
 		else if (MAJOR(inode->i_zone[0]) == 5)

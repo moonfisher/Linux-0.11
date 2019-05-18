@@ -41,5 +41,5 @@ int sys_ioctl(unsigned int fd, unsigned int cmd, unsigned long arg)
 		return -ENODEV;
 	if (!ioctl_table[MAJOR(dev)])
 		return -ENOTTY;
-	return ioctl_table[MAJOR(dev)](dev, cmd, arg);
+	return ioctl_table[MAJOR(dev)](dev, cmd, (int)arg);
 }

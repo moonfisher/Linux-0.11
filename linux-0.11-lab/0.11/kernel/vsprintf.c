@@ -220,8 +220,7 @@ int vsprintf(char *buf, const char *fmt, va_list args)
 			break;
 
 		case 'o':
-			str = number(str, va_arg(args, unsigned long), 8,
-						 field_width, precision, flags);
+			str = number(str, (int)(va_arg(args, unsigned long)), 8, field_width, precision, flags);
 			break;
 
 		case 'p':
@@ -230,29 +229,25 @@ int vsprintf(char *buf, const char *fmt, va_list args)
 				field_width = 8;
 				flags |= ZEROPAD;
 			}
-			str = number(str,
-						 (unsigned long)va_arg(args, void *), 16,
-						 field_width, precision, flags);
+			str = number(str, (int)va_arg(args, void *), 16, field_width, precision, flags);
 			break;
 
 		case 'x':
 			flags |= SMALL;
 		case 'X':
-			str = number(str, va_arg(args, unsigned long), 16,
-						 field_width, precision, flags);
+			str = number(str, (int)(va_arg(args, unsigned long)), 16, field_width, precision, flags);
 			break;
 
 		case 'd':
 		case 'i':
 			flags |= SIGN;
 		case 'u':
-			str = number(str, va_arg(args, unsigned long), 10,
-						 field_width, precision, flags);
+			str = number(str, (int)(va_arg(args, unsigned long)), 10, field_width, precision, flags);
 			break;
 
 		case 'n':
 			ip = va_arg(args, int *);
-			*ip = (str - buf);
+			*ip = (int)(str - buf);
 			break;
 
 		default:
@@ -266,5 +261,5 @@ int vsprintf(char *buf, const char *fmt, va_list args)
 		}
 	}
 	*str = '\0';
-	return str - buf;
+	return (int)(str - buf);
 }

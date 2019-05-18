@@ -395,11 +395,11 @@ void do_no_page(unsigned long error_code, unsigned long address)
 	if (!(page = get_free_page()))
 		oom();
 	/* remember that 1 block is used for header */
-	block = 1 + tmp / BLOCK_SIZE;
+	block = (int)(1 + tmp / BLOCK_SIZE);
 	for (i = 0; i < 4; block++, i++)
 		nr[i] = bmap(current->executable, block);
 	bread_page(page, current->executable->i_dev, nr);
-	i = tmp + 4096 - current->end_data;
+	i = (int)(tmp + 4096 - current->end_data);
 	tmp = page + 4096;
 	while (i-- > 0)
 	{
@@ -419,7 +419,7 @@ void mem_init(long start_mem, long end_mem)
 	HIGH_MEMORY = end_mem;
 	for (i = 0; i < PAGING_PAGES; i++)
 		mem_map[i] = USED;
-	i = MAP_NR(start_mem);
+	i = (int)(MAP_NR(start_mem));
 	end_mem -= start_mem;
 	end_mem >>= 12;
 	while (end_mem-- > 0)

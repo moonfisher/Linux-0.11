@@ -304,7 +304,7 @@ static struct m_inode *dir_namei(const char *pathname,
 	while ((c = get_fs_byte(pathname++)))
 		if (c == '/')
 			basename = pathname;
-	*namelen = pathname - basename - 1;
+	*namelen = (int)(pathname - basename - 1);
 	*name = basename;
 	return dir;
 }
@@ -585,7 +585,7 @@ static int empty_dir(struct m_inode *inode)
 	struct buffer_head *bh;
 	struct dir_entry *de;
 
-	len = inode->i_size / sizeof(struct dir_entry);
+	len = (int)(inode->i_size / sizeof(struct dir_entry));
 	if (len < 2 || !inode->i_zone[0] ||
 		!(bh = bread(inode->i_dev, inode->i_zone[0])))
 	{

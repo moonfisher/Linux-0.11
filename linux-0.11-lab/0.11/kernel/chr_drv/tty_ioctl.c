@@ -174,7 +174,7 @@ int tty_ioctl(int dev, int cmd, int arg)
 		put_fs_long(tty->pgrp, (unsigned long *)arg);
 		return 0;
 	case TIOCSPGRP:
-		tty->pgrp = get_fs_long((unsigned long *)arg);
+		tty->pgrp = (int)get_fs_long((unsigned long *)arg);
 		return 0;
 	case TIOCOUTQ:
 		verify_area((void *)arg, 4);
@@ -182,8 +182,7 @@ int tty_ioctl(int dev, int cmd, int arg)
 		return 0;
 	case TIOCINQ:
 		verify_area((void *)arg, 4);
-		put_fs_long(CHARS(tty->secondary),
-					(unsigned long *)arg);
+		put_fs_long(CHARS(tty->secondary), (unsigned long *)arg);
 		return 0;
 	case TIOCSTI:
 		return -EINVAL; /* not implemented */

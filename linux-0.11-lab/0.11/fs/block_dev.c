@@ -13,7 +13,7 @@
 
 int block_write(int dev, long *pos, char *buf, int count)
 {
-	int block = *pos >> BLOCK_SIZE_BITS;
+	int block = (int)(*pos) >> BLOCK_SIZE_BITS;
 	int offset = *pos & (BLOCK_SIZE - 1);
 	int chars;
 	int written = 0;
@@ -47,7 +47,7 @@ int block_write(int dev, long *pos, char *buf, int count)
 
 int block_read(int dev, unsigned long *pos, char *buf, int count)
 {
-	int block = *pos >> BLOCK_SIZE_BITS;
+	int block = (unsigned int)(*pos) >> BLOCK_SIZE_BITS;
 	int offset = *pos & (BLOCK_SIZE - 1);
 	int chars;
 	int read = 0;
