@@ -1,11 +1,11 @@
 #ifndef _SCHED_H
 #define _SCHED_H
 
-#define NR_TASKS 64
-#define HZ 100
+#define NR_TASKS    64
+#define HZ          100
 
-#define FIRST_TASK task[0]
-#define LAST_TASK task[NR_TASKS - 1]
+#define FIRST_TASK  task[0]
+#define LAST_TASK   task[NR_TASKS - 1]
 
 #include <linux/head.h>
 #include <linux/fs.h>
@@ -16,11 +16,11 @@
 #error "Currently the close-on-exec-flags are in one word, max 32 files/proc"
 #endif
 
-#define TASK_RUNNING 0
-#define TASK_INTERRUPTIBLE 1
-#define TASK_UNINTERRUPTIBLE 2
-#define TASK_ZOMBIE 3
-#define TASK_STOPPED 4
+#define TASK_RUNNING            0
+#define TASK_INTERRUPTIBLE      1
+#define TASK_UNINTERRUPTIBLE    2
+#define TASK_ZOMBIE             3
+#define TASK_STOPPED            4
 
 #ifndef NULL
 #define NULL ((void *)0)

@@ -18,6 +18,7 @@
 #include <asm/io.h>
 #include <asm/segment.h>
 #include <signal.h>
+#include <string.h>
 
 #define _S(nr) (1 << ((nr)-1))
 #define _BLOCKABLE (~(_S(SIGKILL) | _S(SIGSTOP)))
@@ -59,9 +60,96 @@ union task_union {
 	char stack[PAGE_SIZE];
 };
 
-static union task_union init_task = {
-	INIT_TASK,
-};
+static union task_union init_task;
+
+void init_task_f(struct task_struct *init_task_t)
+{
+    init_task_t->state = 0;
+    init_task_t->counter = 15;
+    init_task_t->priority = 15;
+    init_task_t->signal = 0;
+    memset(init_task_t->sigaction, 0, 32 * sizeof(struct sigaction));
+    init_task_t->blocked = 0;
+
+    init_task_t->exit_code = 0;
+    init_task_t->start_code = 0;
+    init_task_t->end_code = 0;
+    init_task_t->end_data = 0;
+    init_task_t->brk = 0;
+    init_task_t->start_stack = 0;
+    
+    init_task_t->pid = 0;
+    init_task_t->father = -1;
+    init_task_t->pgrp = 0;
+    init_task_t->session = 0;
+    init_task_t->leader = 0;
+    
+    init_task_t->uid = 0;
+    init_task_t->euid = 0;
+    init_task_t->suid = 0;
+    init_task_t->gid = 0;
+    init_task_t->egid = 0;
+    init_task_t->sgid = 0;
+    
+    init_task_t->alarm = 0;
+    init_task_t->utime = 0;
+    init_task_t->stime = 0;
+    init_task_t->cutime = 0;
+    init_task_t->cstime = 0;
+    init_task_t->start_time = 0;
+    init_task_t->used_math = 0;
+
+    init_task_t->tty = -1;
+    init_task_t->umask = 0022;
+    
+    init_task_t->pwd = NULL;
+    init_task_t->root = NULL;
+    init_task_t->executable = NULL;
+    init_task_t->close_on_exec = 0;
+    memset(init_task_t->filp, 0, NR_OPEN * sizeof(struct file *));
+
+    init_task_t->ldt[0].a = 0;
+    init_task_t->ldt[0].b = 0;
+    init_task_t->ldt[1].a = 0x9f;
+    init_task_t->ldt[1].b = 0xc0fa00;
+    init_task_t->ldt[2].a = 0x9f;
+    init_task_t->ldt[2].b = 0xc0f200;
+
+    init_task_t->tss.back_link = 0;
+    init_task_t->tss.esp0 = PAGE_SIZE + (long)&init_task;
+    init_task_t->tss.ss0 = 0x10;
+    init_task_t->tss.esp1 = 0;
+    init_task_t->tss.ss1 = 0;
+    init_task_t->tss.esp2 = 0;
+    init_task_t->tss.ss2 = 0;
+    init_task_t->tss.cr3 = (long)&pg_dir;
+    init_task_t->tss.eip = 0;
+    init_task_t->tss.eflags = 0;
+    init_task_t->tss.eax = 0;
+    init_task_t->tss.ecx = 0;
+    init_task_t->tss.edx = 0;
+    init_task_t->tss.ebx = 0;
+    init_task_t->tss.esp = 0;
+    init_task_t->tss.ebp = 0;
+    init_task_t->tss.esi = 0;
+    init_task_t->tss.edi = 0;
+    init_task_t->tss.es = 0x17;
+    init_task_t->tss.cs = 0x17;
+    init_task_t->tss.ss = 0x17;
+    init_task_t->tss.ds = 0x17;
+    init_task_t->tss.fs = 0x17;
+    init_task_t->tss.gs = 0x17;
+    init_task_t->tss.ldt = _LDT(0);
+    init_task_t->tss.trace_bitmap = 0x80000000;
+    init_task_t->tss.i387.cwd = 0;
+    init_task_t->tss.i387.swd = 0;
+    init_task_t->tss.i387.twd = 0;
+    init_task_t->tss.i387.fip = 0;
+    init_task_t->tss.i387.fcs = 0;
+    init_task_t->tss.i387.foo = 0;
+    init_task_t->tss.i387.fos = 0;
+    memset(init_task_t->tss.i387.st_space, 0, 20);
+}
 
 long volatile jiffies = 0;
 long startup_time = 0;
@@ -424,6 +512,8 @@ void sched_init(void)
 
 	if (sizeof(struct sigaction) != 16)
 		panic("Struct sigaction MUST be 16 bytes");
+    
+    init_task_f(&(init_task.task));
 	set_tss_desc(gdt + FIRST_TSS_ENTRY, &(init_task.task.tss));
 	set_ldt_desc(gdt + FIRST_LDT_ENTRY, &(init_task.task.ldt));
 	p = gdt + 2 + FIRST_TSS_ENTRY;

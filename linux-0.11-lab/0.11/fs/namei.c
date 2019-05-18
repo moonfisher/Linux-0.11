@@ -168,8 +168,7 @@ static struct buffer_head *find_entry(struct m_inode **dir,
  * may not sleep between calling this and putting something into
  * the entry, as someone else might have used it while you slept.
  */
-static struct buffer_head *add_entry(struct m_inode *dir,
-									 const char *name, int namelen, struct dir_entry **res_dir)
+static struct buffer_head *add_entry(struct m_inode *dir, const char *name, int namelen, struct dir_entry **res_dir)
 {
 	int block, i;
 	struct buffer_head *bh;

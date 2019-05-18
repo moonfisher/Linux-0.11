@@ -37,6 +37,7 @@ typedef struct
 {
 	int quot, rem;
 } div_t;
+
 typedef struct
 {
 	long quot, rem;
