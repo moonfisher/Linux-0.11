@@ -58,14 +58,14 @@ _start:
 go:	mov	%cs, %ax    # 代码段，数据段，堆栈段，都设置为 0x9000
 	mov	%ax, %ds
 	mov	%ax, %es
-# put stack at 0x9ff00.
+# put stack at 0x9ff00. 设置堆栈地址
 	mov	%ax, %ss
 	mov	$0xFF00, %sp		# arbitrary value >>512
 
 # load the setup-sectors directly after the bootblock.
 # Note that 'es' is already set up.
 
-load_setup:
+load_setup:     # 加载 setup 程序到内存
 	mov	$0x0000, %dx		# drive 0, head 0
 	mov	$0x0002, %cx		# sector 2, track 0
 	mov	$0x0200, %bx		# address = 512, in INITSEG
