@@ -184,8 +184,8 @@ int main(void) /* This really IS void, no error here. */
 	hd_init();
 	floppy_init();
 	sti();
-	move_to_user_mode();
-	if (!fork())
+	move_to_user_mode();    // 在堆栈里构造中断桢结构，利用 iret 指令修改 cs
+	if (!fork())    // copy_process
 	{ /* we count on this going ok */
 		init();
 	}

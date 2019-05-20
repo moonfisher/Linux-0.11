@@ -59,7 +59,7 @@ long rd_init(long mem_start, int length)
 	int i;
 	char *cp;
 
-	blk_dev[MAJOR_NR].request_fn = DEVICE_REQUEST;
+	blk_dev[MAJOR_NR].request_fn = do_rd_request;
 	rd_start = (char *)mem_start;
 	rd_length = length;
 	cp = rd_start;
