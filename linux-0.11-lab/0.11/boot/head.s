@@ -21,6 +21,8 @@ startup_32:
 	mov %ax, %es
 	mov %ax, %fs
 	mov %ax, %gs
+# 设置堆栈 esp 成指向 user_stack 数组的顶端
+# 此时该堆栈是内核程序自己使用的堆栈。其中给出的地址是大约值，它们与编译时的实际设置参数有关
 	lss stack_start, %esp
 	call setup_idt
 	call setup_gdt
@@ -29,8 +31,10 @@ startup_32:
 	mov %ax, %es		# reloaded in 'setup_gdt'
 	mov %ax, %fs
 	mov %ax, %gs
+# 设置堆栈 esp 成指向 user_stack 数组的顶端
+# 此时该堆栈是内核程序自己使用的堆栈。其中给出的地址是大约值，它们与编译时的实际设置参数有关
 	lss stack_start, %esp
-	xorl %eax,%eax
+	xorl %eax, %eax
 1:	incl %eax		# check that A20 really IS enabled
 	movl %eax, 0x000000	# loop forever if it isn't
 	cmpl %eax, 0x100000

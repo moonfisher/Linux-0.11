@@ -69,6 +69,10 @@ int copy_mem(int nr, struct task_struct *p)
  * information (task[nr]) and sets up the necessary registers. It
  * also copies the data segment in it's entirety.
  */
+/*
+ https://blog.csdn.net/yihaolovem/article/details/37119971
+ Linux 内核堆栈使用方法
+*/
 int copy_process(int nr, long ebp, long edi, long esi, long gs, long none, long ebx, long ecx, long edx, long fs, long es, long ds, long eip, long cs, long eflags, long esp, long ss)
 {
 	struct task_struct *p;
@@ -94,6 +98,13 @@ int copy_process(int nr, long ebp, long edi, long esi, long gs, long none, long 
 	p->cutime = p->cstime = 0;
 	p->start_time = jiffies;
 	p->tss.back_link = 0;
+    /*
+     每个任务都有自己的内核态堆栈，用于任务在内核代码中执行期间。其所在线性地址中的位置由
+     该任务 TSS 段中 ss0 和 esp0 两个字段指定。ss0 是任务内核态堆栈的段选择符，esp0 是
+     堆栈栈底指针。因此每当任务从用户代码转移进入内核代码中执行时，任务的内核态栈总是空的。
+     任务内核态堆栈被设置在位于其任务数据结构所在页面的末端，即与任务的任务数据结构
+     （task_struct）放在同一页面内
+    */
 	p->tss.esp0 = PAGE_SIZE + (long)p;
 	p->tss.ss0 = 0x10;
 	p->tss.eip = eip;

@@ -183,10 +183,13 @@ int main(void) /* This really IS void, no error here. */
 	buffer_init(buffer_memory_end);
 	hd_init();
 	floppy_init();
+    
 	sti();
 	move_to_user_mode();    // 在堆栈里构造中断桢结构，利用 iret 指令修改 cs
+    
 	if (!fork())    // copy_process
-	{ /* we count on this going ok */
+	{
+        /* we count on this going ok */
 		init();
 	}
 	/*
@@ -225,9 +228,11 @@ void init(void)
 	(void)open("/dev/tty0", O_RDWR, 0);
 	(void)dup(0);
 	(void)dup(0);
+    
 	printf("%d buffers = %d bytes buffer space\n\r", NR_BUFFERS,
 		   NR_BUFFERS * BLOCK_SIZE);
 	printf("Free mem: %d bytes\n\r", memory_end - main_memory_start);
+    
 	if (!(pid = fork()))
 	{
 		close(0);
@@ -236,6 +241,7 @@ void init(void)
 		execve("/bin/sh", argv_rc, envp_rc);
 		_exit(2);
 	}
+    
 	if (pid > 0)
 		while (pid != wait(&i))
 			/* nothing */;
