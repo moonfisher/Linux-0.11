@@ -50,6 +50,11 @@ struct hd_i_struct
 struct hd_i_struct hd_info[] = {HD_TYPE};
 #define NR_HD ((sizeof(hd_info)) / (sizeof(struct hd_i_struct)))
 #else
+/*
+ {
+    {head = 0x10, sect = 0x26, cyl = 0x19a, wpcom = 0xffff, lzone = 0x19a, ctl = 0xc8},
+    {head = 0x0, sect = 0x0, cyl = 0x0, wpcom = 0x0, lzone = 0x0, ctl = 0x0}}
+*/
 struct hd_i_struct hd_info[] = {{0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}};
 static int NR_HD = 0;
 #endif

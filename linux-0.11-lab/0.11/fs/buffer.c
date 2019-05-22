@@ -35,6 +35,22 @@
 extern void put_super(int);
 extern void invalidate_inodes(int);
 
+/*
+ {
+    b_data = 0x3ffc00,
+    b_blocknr = 0x0,
+    b_dev = 0x300,
+    b_uptodate = 0x1,
+    b_dirt = 0x0,
+    b_count = 0x0,
+    b_lock = 0x0,
+    b_wait = 0x0,
+    b_prev = 0x25bb0,
+    b_next = 0x0,
+    b_prev_free = 0x43f28,
+    b_next_free = 0x25bb0
+ }
+*/
 struct buffer_head *start_buffer = (struct buffer_head *)&end;
 struct buffer_head *hash_table[NR_HASH];
 static struct buffer_head *free_list;
