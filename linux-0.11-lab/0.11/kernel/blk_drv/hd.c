@@ -50,6 +50,11 @@ struct hd_i_struct
 struct hd_i_struct hd_info[] = {HD_TYPE};
 #define NR_HD ((sizeof(hd_info)) / (sizeof(struct hd_i_struct)))
 #else
+/*
+ {
+    {head = 0x10, sect = 0x26, cyl = 0x19a, wpcom = 0xffff, lzone = 0x19a, ctl = 0xc8},
+    {head = 0x0, sect = 0x0, cyl = 0x0, wpcom = 0x0, lzone = 0x0, ctl = 0x0}}
+*/
 struct hd_i_struct hd_info[] = {{0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0}};
 static int NR_HD = 0;
 #endif
@@ -376,7 +381,7 @@ void do_hd_request(void)
 
 void hd_init(void)
 {
-	blk_dev[MAJOR_NR].request_fn = DEVICE_REQUEST;
+	blk_dev[MAJOR_NR].request_fn = do_hd_request;
 	set_intr_gate(0x2E, &hd_interrupt);
 	outb_p(inb_p(0x21) & 0xfb, 0x21);
 	outb(inb_p(0xA1) & 0xbf, 0xA1);

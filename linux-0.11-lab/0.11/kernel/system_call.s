@@ -50,7 +50,7 @@ counter	= 4
 priority = 8
 signal	= 12
 sigaction = 16		# MUST be 16 (=len of sigaction)
-blocked = (33*16)
+blocked = (33 * 16)
 
 # offsets within sigaction
 sa_handler = 0
@@ -64,13 +64,13 @@ nr_system_calls = 72
  * Ok, I get parallel printer interrupts while using the floppy for some
  * strange reason. Urgel. Now I just ignore them.
  */
-.globl system_call,sys_fork,timer_interrupt,sys_execve
-.globl hd_interrupt,floppy_interrupt,parallel_interrupt
+.globl system_call, sys_fork, timer_interrupt, sys_execve
+.globl hd_interrupt, floppy_interrupt, parallel_interrupt
 .globl device_not_available, coprocessor_error
 
 .align 2
 bad_sys_call:
-	movl $-1,%eax
+	movl $-1, %eax
 	iret
 .align 2
 reschedule:
@@ -78,7 +78,7 @@ reschedule:
 	jmp schedule
 .align 2
 system_call:
-	cmpl $nr_system_calls-1,%eax
+	cmpl $nr_system_calls - 1, %eax
 	ja bad_sys_call
 	push %ds
 	push %es
@@ -86,34 +86,34 @@ system_call:
 	pushl %edx
 	pushl %ecx		# push %ebx,%ecx,%edx as parameters
 	pushl %ebx		# to the system call
-	movl $0x10,%edx		# set up ds,es to kernel space
-	mov %dx,%ds
-	mov %dx,%es
-	movl $0x17,%edx		# fs points to local data space
-	mov %dx,%fs
-	call *sys_call_table(,%eax,4)
+	movl $0x10, %edx		# set up ds,es to kernel space
+	mov %dx, %ds
+	mov %dx, %es
+	movl $0x17, %edx		# fs points to local data space
+	mov %dx, %fs
+	call *sys_call_table(, %eax, 4)
 	pushl %eax
-	movl current,%eax
-	cmpl $0,state(%eax)		# state
+	movl current, %eax
+	cmpl $0, state(%eax)		# state
 	jne reschedule
-	cmpl $0,counter(%eax)		# counter
+	cmpl $0, counter(%eax)		# counter
 	je reschedule
 ret_from_sys_call:
-	movl current,%eax		# task[0] cannot have signals
-	cmpl task,%eax
+	movl current, %eax		# task[0] cannot have signals
+	cmpl task, %eax
 	je 3f
-	cmpw $0x0f,CS(%esp)		# was old code segment supervisor ?
+	cmpw $0x0f, CS(%esp)		# was old code segment supervisor ?
 	jne 3f
-	cmpw $0x17,OLDSS(%esp)		# was stack segment = 0x17 ?
+	cmpw $0x17, OLDSS(%esp)		# was stack segment = 0x17 ?
 	jne 3f
-	movl signal(%eax),%ebx
-	movl blocked(%eax),%ecx
+	movl signal(%eax), %ebx
+	movl blocked(%eax), %ecx
 	notl %ecx
-	andl %ebx,%ecx
-	bsfl %ecx,%ecx
+	andl %ebx, %ecx
+	bsfl %ecx, %ecx
 	je 3f
-	btrl %ecx,%ebx
-	movl %ebx,signal(%eax)
+	btrl %ecx, %ebx
+	movl %ebx, signal(%eax)
 	incl %ecx
 	pushl %ecx
 	call do_signal
@@ -136,11 +136,11 @@ coprocessor_error:
 	pushl %ecx
 	pushl %ebx
 	pushl %eax
-	movl $0x10,%eax
-	mov %ax,%ds
-	mov %ax,%es
-	movl $0x17,%eax
-	mov %ax,%fs
+	movl $0x10, %eax
+	mov %ax, %ds
+	mov %ax, %es
+	movl $0x17, %eax
+	mov %ax, %fs
 	pushl $ret_from_sys_call
 	jmp math_error
 
@@ -153,15 +153,15 @@ device_not_available:
 	pushl %ecx
 	pushl %ebx
 	pushl %eax
-	movl $0x10,%eax
-	mov %ax,%ds
-	mov %ax,%es
-	movl $0x17,%eax
-	mov %ax,%fs
+	movl $0x10, %eax
+	mov %ax, %ds
+	mov %ax, %es
+	movl $0x17, %eax
+	mov %ax, %fs
 	pushl $ret_from_sys_call
 	clts				# clear TS so that we can use math
-	movl %cr0,%eax
-	testl $0x4,%eax			# EM (math emulation bit)
+	movl %cr0, %eax
+	testl $0x4, %eax			# EM (math emulation bit)
 	je math_state_restore
 	pushl %ebp
 	pushl %esi
@@ -181,33 +181,33 @@ timer_interrupt:
 	pushl %ecx		# save those across function calls. %ebx
 	pushl %ebx		# is saved as we use that in ret_sys_call
 	pushl %eax
-	movl $0x10,%eax
-	mov %ax,%ds
-	mov %ax,%es
-	movl $0x17,%eax
-	mov %ax,%fs
+	movl $0x10, %eax
+	mov %ax, %ds
+	mov %ax, %es
+	movl $0x17, %eax
+	mov %ax, %fs
 	incl jiffies
-	movb $0x20,%al		# EOI to interrupt controller #1
-	outb %al,$0x20
-	movl CS(%esp),%eax
-	andl $3,%eax		# %eax is CPL (0 or 3, 0=supervisor)
+	movb $0x20, %al		# EOI to interrupt controller #1
+	outb %al, $0x20
+	movl CS(%esp), %eax
+	andl $3, %eax		# %eax is CPL (0 or 3, 0=supervisor)
 	pushl %eax
 	call do_timer		# 'do_timer(long CPL)' does everything from
-	addl $4,%esp		# task switching to accounting ...
+	addl $4, %esp		# task switching to accounting ...
 	jmp ret_from_sys_call
 
 .align 2
 sys_execve:
-	lea EIP(%esp),%eax
+	lea EIP(%esp), %eax
 	pushl %eax
 	call do_execve
-	addl $4,%esp
+	addl $4, %esp
 	ret
 
 .align 2
 sys_fork:
 	call find_empty_process
-	testl %eax,%eax
+	testl %eax, %eax
 	js 1f
 	push %gs
 	pushl %esi
@@ -215,7 +215,7 @@ sys_fork:
 	pushl %ebp
 	pushl %eax
 	call copy_process
-	addl $20,%esp
+	addl $20, %esp
 1:	ret
 
 hd_interrupt:
@@ -225,21 +225,21 @@ hd_interrupt:
 	push %ds
 	push %es
 	push %fs
-	movl $0x10,%eax
-	mov %ax,%ds
-	mov %ax,%es
-	movl $0x17,%eax
-	mov %ax,%fs
-	movb $0x20,%al
-	outb %al,$0xA0		# EOI to interrupt controller #1
+	movl $0x10, %eax
+	mov %ax, %ds
+	mov %ax, %es
+	movl $0x17, %eax
+	mov %ax, %fs
+	movb $0x20, %al
+	outb %al, $0xA0		# EOI to interrupt controller #1
 	jmp 1f			# give port chance to breathe
 1:	jmp 1f
-1:	xorl %edx,%edx
-	xchgl do_hd,%edx
-	testl %edx,%edx
+1:	xorl %edx, %edx
+	xchgl do_hd, %edx
+	testl %edx, %edx
 	jne 1f
-	movl $unexpected_hd_interrupt,%edx
-1:	outb %al,$0x20
+	movl $unexpected_hd_interrupt, %edx
+1:	outb %al, $0x20
 	call *%edx		# "interesting" way of handling intr.
 	pop %fs
 	pop %es
@@ -256,18 +256,18 @@ floppy_interrupt:
 	push %ds
 	push %es
 	push %fs
-	movl $0x10,%eax
-	mov %ax,%ds
-	mov %ax,%es
-	movl $0x17,%eax
-	mov %ax,%fs
-	movb $0x20,%al
-	outb %al,$0x20		# EOI to interrupt controller #1
-	xorl %eax,%eax
-	xchgl do_floppy,%eax
-	testl %eax,%eax
+	movl $0x10, %eax
+	mov %ax, %ds
+	mov %ax, %es
+	movl $0x17, %eax
+	mov %ax, %fs
+	movb $0x20, %al
+	outb %al, $0x20		# EOI to interrupt controller #1
+	xorl %eax, %eax
+	xchgl do_floppy, %eax
+	testl %eax, %eax
 	jne 1f
-	movl $unexpected_floppy_interrupt,%eax
+	movl $unexpected_floppy_interrupt, %eax
 1:	call *%eax		# "interesting" way of handling intr.
 	pop %fs
 	pop %es
@@ -279,7 +279,7 @@ floppy_interrupt:
 
 parallel_interrupt:
 	pushl %eax
-	movb $0x20,%al
-	outb %al,$0x20
+	movb $0x20, %al
+	outb %al, $0x20
 	popl %eax
 	iret

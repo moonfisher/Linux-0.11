@@ -142,10 +142,18 @@ static void time_init(void)
 	startup_time = kernel_mktime(&time);
 }
 
+// 0x1000000
 static long memory_end = 0;
+// 0x400000
 static long buffer_memory_end = 0;
+// 0x400000
 static long main_memory_start = 0;
 
+/*
+ {
+    dummy = {0x9a, 0x1, 0x10, 0x0, 0x0, 0xff, 0xff, 0x0, 0xc8, 0x0, 0x0, 0x0, 0x9a, 0x1, 0x26, 0x0 <repeats 17 times>}
+ }
+*/
 struct drive_info
 {
 	char dummy[32];
@@ -159,16 +167,25 @@ int main(void) /* This really IS void, no error here. */
  */
 	ROOT_DEV = ORIG_ROOT_DEV;
 	drive_info = DRIVE_INFO;
+    
 	memory_end = (1 << 20) + (EXT_MEM_K << 10);
 	memory_end &= 0xfffff000;
 	if (memory_end > 16 * 1024 * 1024)
+    {
 		memory_end = 16 * 1024 * 1024;
+    }
 	if (memory_end > 12 * 1024 * 1024)
+    {
 		buffer_memory_end = 4 * 1024 * 1024;
+    }
 	else if (memory_end > 6 * 1024 * 1024)
+    {
 		buffer_memory_end = 2 * 1024 * 1024;
+    }
 	else
+    {
 		buffer_memory_end = 1 * 1024 * 1024;
+    }
 	main_memory_start = buffer_memory_end;
 #ifdef RAMDISK_SIZE
 	main_memory_start += rd_init(main_memory_start, RAMDISK_SIZE * 1024);
@@ -183,10 +200,13 @@ int main(void) /* This really IS void, no error here. */
 	buffer_init(buffer_memory_end);
 	hd_init();
 	floppy_init();
+    
 	sti();
-	move_to_user_mode();
-	if (!fork())
-	{ /* we count on this going ok */
+	move_to_user_mode();    // 在堆栈里构造中断桢结构，利用 iret 指令修改 cs
+    
+	if (!fork())    // copy_process
+	{
+        /* we count on this going ok */
 		init();
 	}
 	/*
@@ -225,9 +245,10 @@ void init(void)
 	(void)open("/dev/tty0", O_RDWR, 0);
 	(void)dup(0);
 	(void)dup(0);
-	printf("%d buffers = %d bytes buffer space\n\r", NR_BUFFERS,
-		   NR_BUFFERS * BLOCK_SIZE);
+    
+	printf("%d buffers = %d bytes buffer space\n\r", NR_BUFFERS, NR_BUFFERS * BLOCK_SIZE);
 	printf("Free mem: %d bytes\n\r", memory_end - main_memory_start);
+    
 	if (!(pid = fork()))
 	{
 		close(0);
@@ -236,6 +257,7 @@ void init(void)
 		execve("/bin/sh", argv_rc, envp_rc);
 		_exit(2);
 	}
+    
 	if (pid > 0)
 		while (pid != wait(&i))
 			/* nothing */;

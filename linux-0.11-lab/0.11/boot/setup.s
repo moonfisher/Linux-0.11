@@ -121,7 +121,7 @@ do_move:
 	mov	%ax, %ds	# source segment
 	sub	%di, %di
 	sub	%si, %si
-	mov 	$0x8000, %cx
+	mov $0x8000, %cx
 	rep
 	movsw
 	jmp	do_move
@@ -158,29 +158,29 @@ end_move:
 	mov	$0x11, %al		# initialization sequence(ICW1)
 					# ICW4 needed(1),CASCADE mode,Level-triggered
 	out	%al, $0x20		# send it to 8259A-1
-	.word	0x00eb,0x00eb		# jmp $+2, jmp $+2
+	.word	0x00eb, 0x00eb		# jmp $+2, jmp $+2
 	out	%al, $0xA0		# and to 8259A-2
-	.word	0x00eb,0x00eb
+	.word	0x00eb, 0x00eb
 	mov	$0x20, %al		# start of hardware int's (0x20)(ICW2)
 	out	%al, $0x21		# from 0x20-0x27
-	.word	0x00eb,0x00eb
+	.word	0x00eb, 0x00eb
 	mov	$0x28, %al		# start of hardware int's 2 (0x28)
 	out	%al, $0xA1		# from 0x28-0x2F
-	.word	0x00eb,0x00eb		#               IR 7654 3210
+	.word	0x00eb, 0x00eb		#               IR 7654 3210
 	mov	$0x04, %al		# 8259-1 is master(0000 0100) --\
 	out	%al, $0x21		#				|
-	.word	0x00eb,0x00eb		#			 INT	/
+	.word	0x00eb, 0x00eb		#			 INT	/
 	mov	$0x02, %al		# 8259-2 is slave(       010 --> 2)
 	out	%al, $0xA1
-	.word	0x00eb,0x00eb
+	.word	0x00eb, 0x00eb
 	mov	$0x01, %al		# 8086 mode for both
 	out	%al, $0x21
-	.word	0x00eb,0x00eb
+	.word	0x00eb, 0x00eb
 	out	%al, $0xA1
-	.word	0x00eb,0x00eb
+	.word	0x00eb, 0x00eb
 	mov	$0xFF, %al		# mask off all interrupts for now
 	out	%al, $0x21
-	.word	0x00eb,0x00eb
+	.word	0x00eb, 0x00eb
 	out	%al, $0xA1
 
 # well, that certainly wasn't fun :-(. Hopefully it works, and we don't
@@ -206,14 +206,14 @@ end_move:
 # No timeout is used - if this hangs there is something wrong with
 # the machine, and we probably couldn't proceed anyway.
 empty_8042:
-	.word	0x00eb,0x00eb
-	in	$0x64, %al	# 8042 status port
-	test	$2, %al		# is input buffer full?
+	.word	0x00eb, 0x00eb
+	in $0x64, %al	# 8042 status port
+	test $2, %al		# is input buffer full?
 	jnz	empty_8042	# yes - loop
 	ret
 
 gdt:
-	.word	0,0,0,0		# dummy
+	.word	0, 0, 0, 0		# dummy
 
 	.word	0x07FF		# 8Mb - limit=2047 (2048*4096=8Mb)
 	.word	0x0000		# base address=0
@@ -227,11 +227,11 @@ gdt:
 
 idt_48:
 	.word	0			# idt limit=0
-	.word	0,0			# idt base=0L
+	.word	0, 0			# idt base=0L
 
 gdt_48:
 	.word	0x800			# gdt limit=2048, 256 GDT entries
-	.word   512+gdt, 0x9		# gdt base = 0X9xxxx, 
+	.word   512 + gdt, 0x9		# gdt base = 0X9xxxx, 
 	# 512+gdt is the real gdt after setup is moved to 0x9020 * 0x10
 	
 .text

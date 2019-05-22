@@ -192,8 +192,7 @@ static unsigned long change_ldt(unsigned long text_size, unsigned long *page)
 /*
  * 'do_execve()' executes a new program.
  */
-int do_execve(unsigned long *eip, long tmp, char *filename,
-			  char **argv, char **envp)
+int do_execve(unsigned long *eip, long tmp, char *filename, char **argv, char **envp)
 {
 	struct m_inode *inode;
 	struct buffer_head *bh;

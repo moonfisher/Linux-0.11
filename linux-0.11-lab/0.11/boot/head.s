@@ -12,28 +12,32 @@
  * the page directory.
  */
 .text
-.globl idt,gdt,pg_dir,tmp_floppy_area
+.globl idt, gdt, pg_dir, tmp_floppy_area
 pg_dir:
 .globl startup_32
 startup_32:
-	movl $0x10,%eax
-	mov %ax,%ds
-	mov %ax,%es
-	mov %ax,%fs
-	mov %ax,%gs
-	lss stack_start,%esp
+	movl $0x10, %eax
+	mov %ax, %ds
+	mov %ax, %es
+	mov %ax, %fs
+	mov %ax, %gs
+# 设置堆栈 esp 成指向 user_stack 数组的顶端
+# 此时该堆栈是内核程序自己使用的堆栈。其中给出的地址是大约值，它们与编译时的实际设置参数有关
+	lss stack_start, %esp
 	call setup_idt
 	call setup_gdt
-	movl $0x10,%eax		# reload all the segment registers
-	mov %ax,%ds		# after changing gdt. CS was already
-	mov %ax,%es		# reloaded in 'setup_gdt'
-	mov %ax,%fs
-	mov %ax,%gs
-	lss stack_start,%esp
-	xorl %eax,%eax
+	movl $0x10, %eax		# reload all the segment registers
+	mov %ax, %ds		# after changing gdt. CS was already
+	mov %ax, %es		# reloaded in 'setup_gdt'
+	mov %ax, %fs
+	mov %ax, %gs
+# 设置堆栈 esp 成指向 user_stack 数组的顶端
+# 此时该堆栈是内核程序自己使用的堆栈。其中给出的地址是大约值，它们与编译时的实际设置参数有关
+	lss stack_start, %esp
+	xorl %eax, %eax
 1:	incl %eax		# check that A20 really IS enabled
-	movl %eax,0x000000	# loop forever if it isn't
-	cmpl %eax,0x100000
+	movl %eax, 0x000000	# loop forever if it isn't
+	cmpl %eax, 0x100000
 	je 1b
 
 /*
@@ -42,11 +46,11 @@ startup_32:
  * 486 users probably want to set the NE (#5) bit also, so as to use
  * int 16 for math errors.
  */
-	movl %cr0,%eax		# check math chip
-	andl $0x80000011,%eax	# Save PG,PE,ET
+	movl %cr0, %eax		# check math chip
+	andl $0x80000011, %eax	# Save PG,PE,ET
 /* "orl $0x10020,%eax" here for 486 might be good */
-	orl $2,%eax		# set MP
-	movl %eax,%cr0
+	orl $2, %eax		# set MP
+	movl %eax, %cr0
 	call check_x87
 	jmp after_page_tables
 
@@ -56,14 +60,14 @@ startup_32:
 check_x87:
 	fninit
 	fstsw %ax
-	cmpb $0,%al
+	cmpb $0, %al
 	je 1f			/* no coprocessor: have to set bits */
-	movl %cr0,%eax
-	xorl $6,%eax		/* reset MP, set EM */
-	movl %eax,%cr0
+	movl %cr0, %eax
+	xorl $6, %eax		/* reset MP, set EM */
+	movl %eax, %cr0
 	ret
 .align 2
-1:	.byte 0xDB,0xE4		/* fsetpm for 287, ignored by 387 */
+1:	.byte 0xDB, 0xE4		/* fsetpm for 287, ignored by 387 */
 	ret
 
 /*
@@ -78,17 +82,17 @@ check_x87:
  *  written by the page tables.
  */
 setup_idt:
-	lea ignore_int,%edx
-	movl $0x00080000,%eax
-	movw %dx,%ax		/* selector = 0x0008 = cs */
-	movw $0x8E00,%dx	/* interrupt gate - dpl=0, present */
+	lea ignore_int, %edx
+	movl $0x00080000, %eax
+	movw %dx, %ax		/* selector = 0x0008 = cs */
+	movw $0x8E00, %dx	/* interrupt gate - dpl=0, present */
 
-	lea idt,%edi
-	mov $256,%ecx
+	lea idt, %edi
+	mov $256, %ecx
 rp_sidt:
-	movl %eax,(%edi)
-	movl %edx,4(%edi)
-	addl $8,%edi
+	movl %eax, (%edi)
+	movl %edx, 4(%edi)
+	addl $8, %edi
 	dec %ecx
 	jne rp_sidt
 	lidt idt_descr
@@ -132,7 +136,7 @@ pg3:
  * on a 64kB border.
  */
 tmp_floppy_area:
-	.fill 1024,1,0
+	.fill 1024, 1, 0
 
 after_page_tables:
 	pushl $0		# These are the parameters to main :-)
@@ -156,10 +160,10 @@ ignore_int:
 	push %ds
 	push %es
 	push %fs
-	movl $0x10,%eax
-	mov %ax,%ds
-	mov %ax,%es
-	mov %ax,%fs
+	movl $0x10, %eax
+	mov %ax, %ds
+	mov %ax, %es
+	mov %ax, %fs
 	pushl $int_msg
 	call printk
 	popl %eax
@@ -198,44 +202,44 @@ ignore_int:
  */
 .align 2
 setup_paging:
-	movl $1024*5,%ecx		/* 5 pages - pg_dir+4 page tables */
-	xorl %eax,%eax
-	xorl %edi,%edi			/* pg_dir is at 0x000 */
+	movl $1024 * 5, %ecx		/* 5 pages - pg_dir+4 page tables */
+	xorl %eax, %eax
+	xorl %edi, %edi			/* pg_dir is at 0x000 */
 	cld;rep;stosl
-	movl $pg0+7,pg_dir		/* set present bit/user r/w */
-	movl $pg1+7,pg_dir+4		/*  --------- " " --------- */
-	movl $pg2+7,pg_dir+8		/*  --------- " " --------- */
-	movl $pg3+7,pg_dir+12		/*  --------- " " --------- */
-	movl $pg3+4092,%edi
-	movl $0xfff007,%eax		/*  16Mb - 4096 + 7 (r/w user,p) */
+	movl $pg0 + 7, pg_dir		/* set present bit/user r/w */
+	movl $pg1 + 7, pg_dir + 4		/*  --------- " " --------- */
+	movl $pg2 + 7, pg_dir + 8		/*  --------- " " --------- */
+	movl $pg3 + 7, pg_dir + 12		/*  --------- " " --------- */
+	movl $pg3 + 4092, %edi
+	movl $0xfff007, %eax		/*  16Mb - 4096 + 7 (r/w user,p) */
 	std
 1:	stosl			/* fill pages backwards - more efficient :-) */
-	subl $0x1000,%eax
+	subl $0x1000, %eax
 	jge 1b
 	cld
-	xorl %eax,%eax		/* pg_dir is at 0x0000 */
-	movl %eax,%cr3		/* cr3 - page directory start */
-	movl %cr0,%eax
-	orl $0x80000000,%eax
-	movl %eax,%cr0		/* set paging (PG) bit */
+	xorl %eax, %eax		/* pg_dir is at 0x0000 */
+	movl %eax, %cr3		/* cr3 - page directory start */
+	movl %cr0, %eax
+	orl $0x80000000, %eax
+	movl %eax, %cr0		/* set paging (PG) bit */
 	ret			/* this also flushes prefetch-queue */
 
 .align 2
 .word 0
 idt_descr:
-	.word 256*8-1		# idt contains 256 entries
+	.word 256 * 8 - 1		# idt contains 256 entries
 	.long idt
 .align 2
 .word 0
 gdt_descr:
-	.word 256*8-1		# so does gdt (not that that's any
+	.word 256 * 8 - 1		# so does gdt (not that that's any
 	.long gdt		# magic number, but it works for me :^)
 
 	.align 8
-idt:	.fill 256,8,0		# idt is uninitialized
+idt:	.fill 256, 8, 0		# idt is uninitialized
 
 gdt:	.quad 0x0000000000000000	/* NULL descriptor */
 	.quad 0x00c09a0000000fff	/* 16Mb */
 	.quad 0x00c0920000000fff	/* 16Mb */
 	.quad 0x0000000000000000	/* TEMPORARY - don't use */
-	.fill 252,8,0			/* space for LDT's and TSS's etc */
+	.fill 252, 8, 0			/* space for LDT's and TSS's etc */

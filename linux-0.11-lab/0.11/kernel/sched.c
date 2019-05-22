@@ -210,6 +210,7 @@ void schedule(void)
 	/* check alarm, wake up any interruptible tasks that have got a signal */
 
 	for (p = &LAST_TASK; p > &FIRST_TASK; --p)
+    {
 		if (*p)
 		{
 			if ((*p)->alarm && (*p)->alarm < jiffies)
@@ -217,10 +218,13 @@ void schedule(void)
 				(*p)->signal |= (1 << (SIGALRM - 1));
 				(*p)->alarm = 0;
 			}
-			if (((*p)->signal & (_BLOCKABLE & ~(*p)->blocked)) &&
-				(*p)->state == TASK_INTERRUPTIBLE)
+			if (((*p)->signal & (_BLOCKABLE & ~(*p)->blocked))
+                && (*p)->state == TASK_INTERRUPTIBLE)
+            {
 				(*p)->state = TASK_RUNNING;
+            }
 		}
+    }
 
 	/* this is the scheduler proper: */
 
@@ -235,13 +239,20 @@ void schedule(void)
 			if (!*--p)
 				continue;
 			if ((*p)->state == TASK_RUNNING && (*p)->counter > c)
-				c = (int)((*p)->counter), next = i;
+            {
+                c = (int)((*p)->counter);
+                next = i;
+            }
 		}
 		if (c)
 			break;
 		for (p = &LAST_TASK; p > &FIRST_TASK; --p)
+        {
 			if (*p)
+            {
 				(*p)->counter = ((*p)->counter >> 1) + (*p)->priority;
+            }
+        }
 	}
 	switch_to(next);
 }

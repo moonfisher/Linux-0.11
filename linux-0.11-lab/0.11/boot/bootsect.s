@@ -58,14 +58,18 @@ _start:
 go:	mov	%cs, %ax    # 代码段，数据段，堆栈段，都设置为 0x9000
 	mov	%ax, %ds
 	mov	%ax, %es
+
 # put stack at 0x9ff00.
+# 这里才开始设置堆栈地址 0x9000，之前没用堆栈，就算要用也还是 bios 设置过的堆栈
+# 这就是系统初始化时临时使用的堆栈
+# setup.s 程序中也沿用了 bootsect 中设置的堆栈段
 	mov	%ax, %ss
 	mov	$0xFF00, %sp		# arbitrary value >>512
 
 # load the setup-sectors directly after the bootblock.
 # Note that 'es' is already set up.
 
-load_setup:
+load_setup:     # 加载 setup 程序到内存
 	mov	$0x0000, %dx		# drive 0, head 0
 	mov	$0x0002, %cx		# sector 2, track 0
 	mov	$0x0200, %bx		# address = 512, in INITSEG

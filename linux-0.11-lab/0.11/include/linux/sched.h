@@ -79,6 +79,50 @@ struct tss_struct
 	struct i387_struct i387;
 };
 
+/*
+ linux 下可以用 ls -l 命令来看到文件的权限。
+ 用 ls 命令所得到的表示法的格式是类似这样的：-rwxr-xr-x 。这种表示方法一共有十位：
+ 
+ 9  |   8 7 6   |   5 4 3   |   2 1 0
+ -  |   r w x   |   r - x   |   r - x
+ 
+ 第 9 位表示文件类型, 可以为 p、d、l、s、c、b 和 -
+ 
+ p 表示命名管道文件
+ d 表示目录文件
+ l 表示符号连接文件
+ - 表示普通文件
+ s 表示 socket 文件
+ c 表示字符设备文件
+ b 表示块设备文件
+ 
+ 第 8-6 位、5-3 位、2-0 位分别表示文件所有者的权限，同组用户的权限，其他用户的权限，其形式为rwx：
+ 
+ r 表示可读，可以读出文件的内容
+ w 表示可写，可以修改文件的内容
+ x 表示可执行，可运行这个程序
+ 没有权限的位置用 - 表示
+ 
+ 例子：
+ 
+ ls -l myfile
+ 显示为：
+ 
+ -rwxr-x--- 1 foo staff 7734 Apr 05 17:07 myfile
+ 
+ 表示文件 myfile 是普通文件，文件的所有者是 foo 用户，而 foo 用户属于 staff 组，
+ 文件只有 1 个硬连接，长度是 7734 个字节，最后修改时间 4月5日17:07。
+ 
+ 所有者 foo 对文件有读写执行权限，staff 组的成员对文件有读和执行权限，其他的用户对这个文件没有权限。
+ 
+ 如果一个文件被设置了 suid 或 sgid 位，会分别表现在所有者或同组用户的权限的可执行位上。
+ 
+ 例如：
+ 1、-rwsr-xr-x 表示 suid 和所有者权限中可执行位被设置
+ 2、-rwSr--r-- 表示 suid 被设置，但所有者权限中可执行位没有被设置
+ 3、-rwxr-sr-x 表示 sgid 和同组用户权限中可执行位被设置
+ 4、-rw-r-Sr-- 表示 sgid 被设置，但同组用户权限中可执行位没有被社
+*/
 struct task_struct
 {
 	/* these are hardcoded - don't touch */
@@ -100,11 +144,18 @@ struct task_struct
     long pgrp;
     long session;
     long leader;
+    // uid (ruid), 用于在系统中标识一个用户是谁，当用户使用用户名和密码成功登录后一个
+    // linux 系统后就唯一确定了他的 uid.
     unsigned short uid;
+    // euid, 用于系统决定用户对系统资源的访问权限，通常情况下等于 uid
     unsigned short euid;
+    // suid (Set User ID)，用于对外权限的开放。它是跟文件绑定而不是跟用户绑定
     unsigned short suid;
+    // 实际组 id
     unsigned short gid;
+    // 有效的组 id，它们指定了访问目标的权限
     unsigned short egid;
+    // sgid (Set Group ID),
     unsigned short sgid;
 	long alarm;
     long utime;

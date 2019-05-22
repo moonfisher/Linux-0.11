@@ -53,6 +53,7 @@ static inline void oom(void)
 #define CODE_SPACE(addr) ((((addr) + 4095) & ~4095) < \
 						  current->start_code + current->end_code)
 
+// 0x1000000
 static long HIGH_MEMORY = 0;
 
 #define copy_page(from, to) \
