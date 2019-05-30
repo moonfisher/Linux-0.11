@@ -537,9 +537,14 @@ void sched_init(void)
 		p++;
 	}
 	/* Clear NT, so that we won't have troubles with that later on */
+    /* 清除标志寄存器中的位NT，这样以后就不会有麻烦 */
+    // NT 标志用于控制程序的递归调用(Nested Task)。当 NT 置位时，那么当前中断任务执行
+    // iret 指令时就会引起任务切换。NT 指出 TSS 中的 back_link 字段是否有效。
 #if ASM_NO_64
 	__asm__("pushfl ; andl $0xffffbfff,(%esp) ; popfl");
 #endif
+    // 注意！！是将 GDT 中相应 LDT 描述符的选择符加载到 ldtr。只明确加载这一次，以后新任务
+    // LDT 的加载，是 CPU 根据 TSS 中的 LDT 项自动加载。
 	ltr(0);
 	lldt(0);
 	outb_p(0x36, 0x43);			/* binary, mode 3, LSB/MSB, ch 0 */

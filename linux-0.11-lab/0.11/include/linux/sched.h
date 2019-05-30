@@ -234,25 +234,32 @@ extern void wake_up(struct task_struct **p);
  * This also clears the TS-flag if the task we switched to has used
  * tha math co-processor latest.
  */
+/*
+ Linux0.11 中默认使用的是硬件支持的 tss 切换，系统为每个进程分配一个 tss 结构用来存储进程的运行
+ 信息（上下文环境），然后通过 CPU 的一个长跳转指令 ljmp，跳转到 TSS 段选择符来，来实现进程的切换，
+ LDT 的更新，也是 CPU 根据 TSS 中的 LDT 项自动加载。
+ 这种方式易于实现，但不便于管理多 CPU 进程，效率不佳，耗费 cpu 时钟周期多，现在操作系统多进程都是
+ 共享同一个全局 TSS，直接在内存里通过切换堆栈来切换进程
+*/
 #if ASM_NO_64
-    #define switch_to(n)                                 \
-        {                                                \
-            struct                                       \
-            {                                            \
-                long a, b;                               \
-            } __tmp;                                     \
-            __asm__("cmpl %%ecx,current\n\t"             \
-                    "je 1f\n\t"                          \
-                    "movw %%dx,%1\n\t"                   \
-                    "xchgl %%ecx,current\n\t"            \
-                    "ljmp *%0\n\t"                       \
-                    "cmpl %%ecx,last_task_used_math\n\t" \
-                    "jne 1f\n\t"                         \
-                    "clts\n"                             \
-                    "1:" ::"m"(*&__tmp.a),               \
-                    "m"(*&__tmp.b),                      \
-                    "d"(_TSS(n)), "c"((long)task[n]));   \
-        }
+#define switch_to(n)                                                        \
+{                                                                           \
+    struct                                                                  \
+    {                                                                       \
+        long a, b;                                                          \
+    } __tmp;                                                                \
+    __asm__("cmpl %%ecx,current\n\t" /*比较当前要切换的进程是否是当前运行的进程*/  \
+            "je 1f\n\t" /*如果是则不调度直接退出*/                              \
+            "movw %%dx,%1\n\t" /*将要调度的 tss 指针存到 tmp.b 中*/             \
+            "xchgl %%ecx,current\n\t" /*交换 pcb 值，要调度的存储在 ecx 中*/     \
+            "ljmp *%0\n\t" /*进行长跳转，即切换 tss*/                           \
+            "cmpl %%ecx,last_task_used_math\n\t" /*进行切换后的处理协处理器*/    \
+            "jne 1f\n\t"                                                     \
+            "clts\n"                                                         \
+            "1:" ::"m"(*&__tmp.a),                                           \
+            "m"(*&__tmp.b),                                                  \
+            "d"(_TSS(n)), "c"((long)task[n]));                               \
+}
 #else
     #define switch_to(n)
 #endif
