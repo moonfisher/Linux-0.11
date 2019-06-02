@@ -15,7 +15,7 @@ int close(int fd)
                      : "0"(__NR_close), "b"((long)(fd)));
     if (__res >= 0)
         return (int)__res;
-    errno = (int)-__res;
+    errno = (int) - __res;
     return -1;
 }
 

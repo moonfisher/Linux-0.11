@@ -41,53 +41,53 @@ typedef int (*fn_ptr)();
 
 struct i387_struct
 {
-	long cwd;
-	long swd;
-	long twd;
-	long fip;
-	long fcs;
-	long foo;
-	long fos;
-	long st_space[20]; /* 8*10 bytes for each FP-reg = 80 bytes */
+    long cwd;
+    long swd;
+    long twd;
+    long fip;
+    long fcs;
+    long foo;
+    long fos;
+    long st_space[20]; /* 8*10 bytes for each FP-reg = 80 bytes */
 };
 
 struct tss_struct
 {
-	long back_link; /* 16 high bits zero */
-	long esp0;
-	long ss0; /* 16 high bits zero */
-	long esp1;
-	long ss1; /* 16 high bits zero */
-	long esp2;
-	long ss2; /* 16 high bits zero */
-	long cr3;
-	long eip;
-	long eflags;
-	long eax, ecx, edx, ebx;
-	long esp;
-	long ebp;
-	long esi;
-	long edi;
-	long es;		   /* 16 high bits zero */
-	long cs;		   /* 16 high bits zero */
-	long ss;		   /* 16 high bits zero */
-	long ds;		   /* 16 high bits zero */
-	long fs;		   /* 16 high bits zero */
-	long gs;		   /* 16 high bits zero */
-	long ldt;		   /* 16 high bits zero */
-	long trace_bitmap; /* bits: trace 0, bitmap 16-31 */
-	struct i387_struct i387;
+    long back_link; /* 16 high bits zero */
+    long esp0;
+    long ss0; /* 16 high bits zero */
+    long esp1;
+    long ss1; /* 16 high bits zero */
+    long esp2;
+    long ss2; /* 16 high bits zero */
+    long cr3;
+    long eip;
+    long eflags;
+    long eax, ecx, edx, ebx;
+    long esp;
+    long ebp;
+    long esi;
+    long edi;
+    long es;		   /* 16 high bits zero */
+    long cs;		   /* 16 high bits zero */
+    long ss;		   /* 16 high bits zero */
+    long ds;		   /* 16 high bits zero */
+    long fs;		   /* 16 high bits zero */
+    long gs;		   /* 16 high bits zero */
+    long ldt;		   /* 16 high bits zero */
+    long trace_bitmap; /* bits: trace 0, bitmap 16-31 */
+    struct i387_struct i387;
 };
 
 /*
  linux 下可以用 ls -l 命令来看到文件的权限。
  用 ls 命令所得到的表示法的格式是类似这样的：-rwxr-xr-x 。这种表示方法一共有十位：
- 
+
  9  |   8 7 6   |   5 4 3   |   2 1 0
  -  |   r w x   |   r - x   |   r - x
- 
+
  第 9 位表示文件类型, 可以为 p、d、l、s、c、b 和 -
- 
+
  p 表示命名管道文件
  d 表示目录文件
  l 表示符号连接文件
@@ -95,28 +95,28 @@ struct tss_struct
  s 表示 socket 文件
  c 表示字符设备文件
  b 表示块设备文件
- 
+
  第 8-6 位、5-3 位、2-0 位分别表示文件所有者的权限，同组用户的权限，其他用户的权限，其形式为rwx：
- 
+
  r 表示可读，可以读出文件的内容
  w 表示可写，可以修改文件的内容
  x 表示可执行，可运行这个程序
  没有权限的位置用 - 表示
- 
+
  例子：
- 
+
  ls -l myfile
  显示为：
- 
+
  -rwxr-x--- 1 foo staff 7734 Apr 05 17:07 myfile
- 
+
  表示文件 myfile 是普通文件，文件的所有者是 foo 用户，而 foo 用户属于 staff 组，
  文件只有 1 个硬连接，长度是 7734 个字节，最后修改时间 4月5日17:07。
- 
+
  所有者 foo 对文件有读写执行权限，staff 组的成员对文件有读和执行权限，其他的用户对这个文件没有权限。
- 
+
  如果一个文件被设置了 suid 或 sgid 位，会分别表现在所有者或同组用户的权限的可执行位上。
- 
+
  例如：
  1、-rwsr-xr-x 表示 suid 和所有者权限中可执行位被设置
  2、-rwSr--r-- 表示 suid 被设置，但所有者权限中可执行位没有被设置
@@ -125,15 +125,15 @@ struct tss_struct
 */
 struct task_struct
 {
-	/* these are hardcoded - don't touch */
-	long state; /* -1 unrunnable, 0 runnable, >0 stopped */
-	long counter;
-	long priority;
-	long signal;
-	struct sigaction sigaction[32];
-	long blocked; /* bitmap of masked signals */
-				  /* various fields */
-	int exit_code;
+    /* these are hardcoded - don't touch */
+    long state; /* -1 unrunnable, 0 runnable, >0 stopped */
+    long counter;
+    long priority;
+    long signal;
+    struct sigaction sigaction[32];
+    long blocked; /* bitmap of masked signals */
+    /* various fields */
+    int exit_code;
     unsigned long start_code;
     unsigned long end_code;
     unsigned long end_data;
@@ -157,25 +157,25 @@ struct task_struct
     unsigned short egid;
     // sgid (Set Group ID),
     unsigned short sgid;
-	long alarm;
+    long alarm;
     long utime;
     long stime;
     long cutime;
     long cstime;
     long start_time;
-	unsigned short used_math;
-	/* file system info */
-	int tty; /* -1 if no tty, so it must be signed */
-	unsigned short umask;
-	struct m_inode *pwd;
-	struct m_inode *root;
-	struct m_inode *executable;
-	unsigned long close_on_exec;
-	struct file *filp[NR_OPEN];
-	/* ldt for this task 0 - zero 1 - cs 2 - ds&ss */
-	struct desc_struct ldt[3];
-	/* tss for this task */
-	struct tss_struct tss;
+    unsigned short used_math;
+    /* file system info */
+    int tty; /* -1 if no tty, so it must be signed */
+    unsigned short umask;
+    struct m_inode *pwd;
+    struct m_inode *root;
+    struct m_inode *executable;
+    unsigned long close_on_exec;
+    struct file *filp[NR_OPEN];
+    /* ldt for this task 0 - zero 1 - cs 2 - ds&ss */
+    struct desc_struct ldt[3];
+    /* tss for this task */
+    struct tss_struct tss;
 };
 
 /*
@@ -261,13 +261,13 @@ extern void wake_up(struct task_struct **p);
             "d"(_TSS(n)), "c"((long)task[n]));                               \
 }
 #else
-    #define switch_to(n)
+#define switch_to(n)
 #endif
 
 #define PAGE_ALIGN(n) (((n) + 0xfff) & 0xfffff000)
 
 #if ASM_NO_64
-    #define _set_base(addr, base)                 \
+#define _set_base(addr, base)                 \
         __asm__("push %%edx\n\t"                  \
                 "movw %%dx,%0\n\t"                \
                 "rorl $16,%%edx\n\t"              \
@@ -278,7 +278,7 @@ extern void wake_up(struct task_struct **p);
                 "m"(*((addr) + 7)),               \
                 "d"(base))
 
-    #define _set_limit(addr, limit)         \
+#define _set_limit(addr, limit)         \
         __asm__("push %%edx\n\t"            \
                 "movw %%dx,%0\n\t"          \
                 "rorl $16,%%edx\n\t"        \
@@ -290,8 +290,8 @@ extern void wake_up(struct task_struct **p);
                 "m"(*((addr) + 6)),         \
                 "d"(limit))
 #else
-    #define _set_base(addr, base)
-    #define _set_limit(addr, limit)
+#define _set_base(addr, base)
+#define _set_limit(addr, limit)
 #endif
 
 #define set_base(ldt, base) _set_base(((char *)&(ldt)), (base))
@@ -314,27 +314,27 @@ __base;})
 
 static inline unsigned long _get_base(char *addr)
 {
-	unsigned long __base;
-	__asm__("movb %3,%%dh\n\t"
-			"movb %2,%%dl\n\t"
-			"shll $16,%%edx\n\t"
-			"movw %1,%%dx"
-			: "=&d"(__base)
-			: "m"(*((addr) + 2)),
-			  "m"(*((addr) + 4)),
-			  "m"(*((addr) + 7)));
-	return __base;
+    unsigned long __base;
+    __asm__("movb %3,%%dh\n\t"
+            "movb %2,%%dl\n\t"
+            "shll $16,%%edx\n\t"
+            "movw %1,%%dx"
+            : "=&d"(__base)
+            : "m"(*((addr) + 2)),
+            "m"(*((addr) + 4)),
+            "m"(*((addr) + 7)));
+    return __base;
 }
 
 #define get_base(ldt) _get_base(((char *)&(ldt)))
 
 #if ASM_NO_64
-    #define get_limit(segment) ({ \
+#define get_limit(segment) ({ \
     unsigned long __limit; \
     __asm__("lsll %1,%0\n\tincl %0":"=r" (__limit):"r" (segment)); \
     __limit; })
 #else
-    #define get_limit(segment) (0)
+#define get_limit(segment) (0)
 #endif
 
 #endif

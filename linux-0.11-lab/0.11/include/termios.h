@@ -35,32 +35,32 @@
 
 struct winsize
 {
-	unsigned short ws_row;
-	unsigned short ws_col;
-	unsigned short ws_xpixel;
-	unsigned short ws_ypixel;
+    unsigned short ws_row;
+    unsigned short ws_col;
+    unsigned short ws_xpixel;
+    unsigned short ws_ypixel;
 };
 
 #define NCC 8
 struct termio
 {
-	unsigned short c_iflag;  /* input mode flags */
-	unsigned short c_oflag;  /* output mode flags */
-	unsigned short c_cflag;  /* control mode flags */
-	unsigned short c_lflag;  /* local mode flags */
-	unsigned char c_line;	/* line discipline */
-	unsigned char c_cc[NCC]; /* control characters */
+    unsigned short c_iflag;  /* input mode flags */
+    unsigned short c_oflag;  /* output mode flags */
+    unsigned short c_cflag;  /* control mode flags */
+    unsigned short c_lflag;  /* local mode flags */
+    unsigned char c_line;	/* line discipline */
+    unsigned char c_cc[NCC]; /* control characters */
 };
 
 #define NCCS 17
 struct termios
 {
-	unsigned long c_iflag;	/* input mode flags */
-	unsigned long c_oflag;	/* output mode flags */
-	unsigned long c_cflag;	/* control mode flags */
-	unsigned long c_lflag;	/* local mode flags */
-	unsigned char c_line;	 /* line discipline */
-	unsigned char c_cc[NCCS]; /* control characters */
+    unsigned long c_iflag;	/* input mode flags */
+    unsigned long c_oflag;	/* output mode flags */
+    unsigned long c_cflag;	/* control mode flags */
+    unsigned long c_lflag;	/* local mode flags */
+    unsigned char c_line;	 /* line discipline */
+    unsigned char c_cc[NCCS]; /* control characters */
 };
 
 /* c_cc characters */
@@ -226,6 +226,6 @@ extern int tcflush(int fildes, int queue_selector);
 extern int tcgetattr(int fildes, struct termios *termios_p);
 extern int tcsendbreak(int fildes, int duration);
 extern int tcsetattr(int fildes, int optional_actions,
-					 struct termios *termios_p);
+                     struct termios *termios_p);
 
 #endif

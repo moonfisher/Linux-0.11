@@ -15,11 +15,11 @@
 
 struct tty_queue
 {
-	unsigned long data;
-	unsigned long head;
-	unsigned long tail;
-	struct task_struct *proc_list;
-	char buf[TTY_BUF_SIZE];
+    unsigned long data;
+    unsigned long head;
+    unsigned long tail;
+    struct task_struct *proc_list;
+    char buf[TTY_BUF_SIZE];
 };
 
 #define INC(a)      ((a) = ((a) + 1) & (TTY_BUF_SIZE - 1))
@@ -45,13 +45,13 @@ struct tty_queue
 
 struct tty_struct
 {
-	struct termios termios;
-	int pgrp;
-	int stopped;
-	void (*write)(struct tty_struct *tty);
-	struct tty_queue read_q;
-	struct tty_queue write_q;
-	struct tty_queue secondary;
+    struct termios termios;
+    int pgrp;
+    int stopped;
+    void (*write)(struct tty_struct *tty);
+    struct tty_queue read_q;
+    struct tty_queue write_q;
+    struct tty_queue secondary;
 };
 
 extern struct tty_struct tty_table[];

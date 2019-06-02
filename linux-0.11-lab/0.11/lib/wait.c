@@ -16,13 +16,13 @@ pid_t waitpid(pid_t pid, int *wait_stat, int options)
                      : "0"(__NR_waitpid), "b"((long)(pid)), "c"((long)(wait_stat)), "d"((long)(options)));
     if (__res >= 0)
         return (pid_t)__res;
-    errno = (int)-__res;
+    errno = (int) - __res;
     return -1;
 }
 
 pid_t wait(int *wait_stat)
 {
-	return waitpid(-1, wait_stat, 0);
+    return waitpid(-1, wait_stat, 0);
 }
 
 

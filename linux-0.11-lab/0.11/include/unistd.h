@@ -2,9 +2,9 @@
 #define _UNISTD_H
 
 #if DEBUG
-    #define ASM_NO_64    0
+#define ASM_NO_64    0
 #else
-    #define ASM_NO_64    1
+#define ASM_NO_64    1
 #endif
 
 /* ok, this may be a joke, but I'm working on it */

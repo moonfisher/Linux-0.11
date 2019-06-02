@@ -5,14 +5,14 @@
 
 struct exec
 {
-  unsigned long a_magic; /* Use macros N_MAGIC, etc for access */
-  unsigned a_text;       /* length of text, in bytes */
-  unsigned a_data;       /* length of data, in bytes */
-  unsigned a_bss;        /* length of uninitialized data area for file, in bytes */
-  unsigned a_syms;       /* length of symbol table data in file, in bytes */
-  unsigned a_entry;      /* start address */
-  unsigned a_trsize;     /* length of relocation info for text, in bytes */
-  unsigned a_drsize;     /* length of relocation info for data, in bytes */
+    unsigned long a_magic; /* Use macros N_MAGIC, etc for access */
+    unsigned a_text;       /* length of text, in bytes */
+    unsigned a_data;       /* length of data, in bytes */
+    unsigned a_bss;        /* length of uninitialized data area for file, in bytes */
+    unsigned a_syms;       /* length of symbol table data in file, in bytes */
+    unsigned a_entry;      /* start address */
+    unsigned a_trsize;     /* length of relocation info for text, in bytes */
+    unsigned a_drsize;     /* length of relocation info for data, in bytes */
 };
 
 #ifndef N_MAGIC
@@ -109,15 +109,16 @@ struct exec
 #ifndef N_NLIST_DECLARED
 struct nlist
 {
-  union {
-    char *n_name;
-    struct nlist *n_next;
-    long n_strx;
-  } n_un;
-  unsigned char n_type;
-  char n_other;
-  short n_desc;
-  unsigned long n_value;
+    union
+    {
+        char *n_name;
+        struct nlist *n_next;
+        long n_strx;
+    } n_un;
+    unsigned char n_type;
+    char n_other;
+    short n_desc;
+    unsigned long n_value;
 };
 #endif
 
@@ -192,27 +193,27 @@ struct nlist
 
 struct relocation_info
 {
-  /* Address (within segment) to be relocated.  */
-  int r_address;
-  /* The meaning of r_symbolnum depends on r_extern.  */
-  unsigned int r_symbolnum : 24;
-  /* Nonzero means value is a pc-relative offset
-     and it should be relocated for changes in its own address
-     as well as for changes in the symbol or section specified.  */
-  unsigned int r_pcrel : 1;
-  /* Length (as exponent of 2) of the field to be relocated.
-     Thus, a value of 2 indicates 1<<2 bytes.  */
-  unsigned int r_length : 2;
-  /* 1 => relocate with value of symbol.
-          r_symbolnum is the index of the symbol
-	  in file's the symbol table.
-     0 => relocate with the address of a segment.
-          r_symbolnum is N_TEXT, N_DATA, N_BSS or N_ABS
-	  (the N_EXT bit may be set also, but signifies nothing).  */
-  unsigned int r_extern : 1;
-  /* Four bits that aren't used, but when writing an object file
-     it is desirable to clear them.  */
-  unsigned int r_pad : 4;
+    /* Address (within segment) to be relocated.  */
+    int r_address;
+    /* The meaning of r_symbolnum depends on r_extern.  */
+    unsigned int r_symbolnum : 24;
+    /* Nonzero means value is a pc-relative offset
+       and it should be relocated for changes in its own address
+       as well as for changes in the symbol or section specified.  */
+    unsigned int r_pcrel : 1;
+    /* Length (as exponent of 2) of the field to be relocated.
+       Thus, a value of 2 indicates 1<<2 bytes.  */
+    unsigned int r_length : 2;
+    /* 1 => relocate with value of symbol.
+            r_symbolnum is the index of the symbol
+      in file's the symbol table.
+       0 => relocate with the address of a segment.
+            r_symbolnum is N_TEXT, N_DATA, N_BSS or N_ABS
+      (the N_EXT bit may be set also, but signifies nothing).  */
+    unsigned int r_extern : 1;
+    /* Four bits that aren't used, but when writing an object file
+       it is desirable to clear them.  */
+    unsigned int r_pad : 4;
 };
 #endif /* no N_RELOCATION_INFO_DECLARED.  */
 

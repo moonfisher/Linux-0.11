@@ -2,11 +2,17 @@ extern int sys_setup(void);
 extern int sys_exit(void);
 
 #if ASM_NO_64
-    extern int sys_fork(void);
-    extern int sys_execve(void);
+extern int sys_fork(void);
+extern int sys_execve(void);
 #else
-    int sys_fork(void){return 0;};
-    int sys_execve(void){return 0;};
+int sys_fork(void)
+{
+    return 0;
+};
+int sys_execve(void)
+{
+    return 0;
+};
 #endif
 
 extern int sys_read(void);
@@ -79,7 +85,8 @@ extern int sys_ssetmask(void);
 extern int sys_setreuid(void);
 extern int sys_setregid(void);
 
-fn_ptr sys_call_table[] = {
+fn_ptr sys_call_table[] =
+{
     sys_setup,
     sys_exit,
     sys_fork,

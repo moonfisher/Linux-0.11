@@ -15,7 +15,7 @@ int setsid(void)
                      : "0"(__NR_setsid));
     if (__res >= 0)
         return (pid_t)__res;
-    errno = (int)-__res;
+    errno = (int) - __res;
     return -1;
 }
 

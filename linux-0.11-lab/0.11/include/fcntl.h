@@ -42,11 +42,11 @@
 /* Once again - not implemented, but ... */
 struct flock
 {
-	short l_type;
-	short l_whence;
-	off_t l_start;
-	off_t l_len;
-	pid_t l_pid;
+    short l_type;
+    short l_whence;
+    off_t l_start;
+    off_t l_len;
+    pid_t l_pid;
 };
 
 extern int creat(const char *filename, mode_t mode);

@@ -1,6 +1,6 @@
 
 #if ASM_NO_64
-    #define move_to_user_mode()            \
+#define move_to_user_mode()            \
         __asm__("movl %%esp,%%eax\n\t"     \
                 "pushl $0x17\n\t"          \
                 "pushl %%eax\n\t"          \
@@ -15,7 +15,7 @@
                 "movw %%ax,%%gs" ::        \
                     : "ax")
 #else
-    #define move_to_user_mode()
+#define move_to_user_mode()
 #endif
 
 #define sti() __asm__("sti" ::)

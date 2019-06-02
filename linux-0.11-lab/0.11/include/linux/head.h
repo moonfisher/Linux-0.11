@@ -2,9 +2,9 @@
 #define _HEAD_H
 
 #if DEBUG
-    #define ASM_NO_64    0
+#define ASM_NO_64    0
 #else
-    #define ASM_NO_64    1
+#define ASM_NO_64    1
 #endif
 
 typedef struct desc_struct
@@ -14,11 +14,11 @@ typedef struct desc_struct
 } desc_table[256];
 
 #if ASM_NO_64
-    extern unsigned long pg_dir[1024];
-    extern desc_table idt, gdt;
+extern unsigned long pg_dir[1024];
+extern desc_table idt, gdt;
 #else
-    unsigned long pg_dir[1024];
-    desc_table idt, gdt;
+unsigned long pg_dir[1024];
+desc_table idt, gdt;
 #endif
 
 #define GDT_NUL     0
