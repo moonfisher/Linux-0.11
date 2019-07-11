@@ -244,7 +244,9 @@ void init(void)
 {
     int pid, i;
 
+    // 在 sys_setup 里挂载磁盘和 rootfs 根文件系统
     setup((void *)&drive_info);
+    
     (void)open("/dev/tty0", O_RDWR, 0);
     (void)dup(0);
     (void)dup(0);
